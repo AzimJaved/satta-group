@@ -1,0 +1,23 @@
+{
+  "name": "satta-group",
+  "version": "1.0.0",
+  "description": "Satta group utility",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AzimJaved/satta-group.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AzimJaved/satta-group/issues"
+  },
+  "homepage": "https://github.com/AzimJaved/satta-group#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "request": "^2.88.0"
+  }
+}
