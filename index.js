@@ -9,17 +9,60 @@ fetchHtml().then( (html) => {
 
 function parseHtml(matchHtml){
     const $ = cheerio.load(matchHtml)
-    var scorecards = []
-    $("[data-reactid='177']").find("[class='sub-module scorecard']").each( function(index, element){
-        scorecards.push(element.children[0].children[0].children[1])
+    var batsmenJson = {}
+    var bowlersJson = {}
+    var batsmen = [  ]
+    var bowlers = [  ]
+    /* TODO : Also need to add players who did not bat or ball over here or suitably adjust in later code */
+    // First innings
+    $("[data-reactid='185']").find("[class='wrap batsmen']").each( function(index, element){
+        batsmen.push(element)
     })
-    var batsmen;
-    for(let j=0; j<scorecards.length; j++){
-        for(let i=0; i<scorecards[j].children[0].children.length; i++){
-            batsmen[i][j] = scorecards[j].children[0].children[i]
+    $("[data-reactid='346']").find("tr").each( function(index, element){
+        bowlers.push(element)
+    })
+    // Second Innings
+    $("[data-reactid='444']").find("[class='wrap batsmen']").each( function(index, element){
+        batsmen.push(element)
+    })
+    $("[data-reactid='635']").find("tr").each( function(index, element){
+        bowlers.push(element)
+    })
+    // generate batsmen json.
+    for(let i=0; i<batsmen.length; i++){
+        var name = batsmen[i].children[0].children[0].children[0].data
+        if(name.includes(' †')){
+            name = name.split(' †')[0]
         }
+        if(name.includes(' (c)')){
+            name = name.split(' (c)')[0]
+        }
+        var batsmanJson = {
+            name : name,
+            runs : batsmen[i].children[2].children[0].data
+        }
+        batsmenJson[batsmanJson.name] = batsmanJson
     }
-    console.log(batsmen); 
+    // generate bowler json
+    for(let i=0; i<bowlers.length; i++){
+        var name = bowlers[i].children[0].children[0].children[0].data
+        if(name.includes(' †')){
+            name = name.split(' †')[0]
+        }
+        if(name.includes(' (c)')){
+            name = name.split(' (c)')[0]
+        }
+        var bowlerJson = {
+            name : name,
+            wickets: bowlers[i].children[5].children[0].data,
+        }
+        bowlersJson[bowlerJson.name] = bowlerJson
+    }
+    var scorecard = {
+        batsmen : batsmenJson,
+        bowler : bowlerJson
+    }
+    return scorecard;
 }
 
 function fetchHtml(){
