@@ -32,19 +32,19 @@ scraper.fetchHtml().then( (html) => {
 })
 
 app.get('/', (req,res) => {
-    // _data is to be fetched from firebase ig lmao. _data is array of players in squads
-    _data = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
-    "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  ]
     res.render('index',{
-        data : _data,
         title : 'Satta Group'
     })  
 })
 
 app.post('/teams', (req,res) =>{
-    // Selected team available as req.body
-    console.log(req.body)
-    res.send("lol")
+    let data = req.body
+    var teams = JSON.parse(fs.readFileSync('./teams/teams.json').toString())
+    teams[data.playerName] = data
+    fs.writeFileSync('./teams/teams.json', JSON.stringify(teams, null, 2))
+    res.render('success', {
+        title : 'Success'
+    })
 })
 
 app.listen(PORT, () => {

@@ -2,7 +2,8 @@
     <script>
         function onLoad(){
             var html = "";
-            var players = [ {{ data }} ]
+            var players = _data = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
+    "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  ]
         players.forEach( (player) =>{
             var txt = '<input type="checkbox" name="players" value="' +player+'">'+player+'</input><br>'
             html += txt;
