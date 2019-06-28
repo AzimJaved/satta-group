@@ -12,7 +12,8 @@ const seriesId = 8089; // World cup
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname,'pages')));
 
 app.set('views', path.join(__dirname, 'pages'))
 app.set('view engine', 'hbs')
@@ -26,10 +27,10 @@ app.engine('hbs', hbs({
 }))
 
 
-scraper.fetchHtml().then( (html) => {
-    var scoreboard = scraper.parseHtml(html)
-    console.log(scoreboard)
-})
+// scraper.fetchHtml().then( (html) => {
+//     var scoreboard = scraper.parseHtml(html)
+//     console.log(scoreboard)
+// })
 
 app.get('/', (req,res) => {
     res.render('index',{
