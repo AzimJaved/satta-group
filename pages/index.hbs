@@ -1,29 +1,20 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-        <script>
-            function onLoad(){
-                var html = "";
-                var players = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
-                        "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  
-            ]
-            players.forEach( (player) =>{
-                var txt = '<input type="checkbox" name="players" value="' +player+'">'+player+'</input><br>'
-                html += txt;
-            })
-            document.getElementById('fmcheckbox').innerHTML += html;
-        }
-        window.onload = onLoad;
-        </script>
-        <title>
-            Satta Group
-        </title>
-    </head>
-    <body>
-        <form method="POST" action="/teams" id="tmform">
-            <div id="fmcheckbox">
-            </div>
-            <input type="text" style="display:none" value="PlayerName" name="playerName" />
-            <input type="submit" value="Submit" />
-        </form>
-    </body>
+<section>
+    <script>
+        function onLoad(){
+            var html = "";
+            var players = [ {{ data }} ]
+        players.forEach( (player) =>{
+            var txt = '<input type="checkbox" name="players" value="' +player+'">'+player+'</input><br>'
+            html += txt;
+        })
+        document.getElementById('fmcheckbox').innerHTML += html;
+    }
+    window.onload = onLoad;
+    </script>
+    <form method="POST" action="/teams" id="tmform">
+        <div id="fmcheckbox">
+        </div>
+        <input type="text" style="display:none" value="PlayerName" name="playerName" />
+        <input type="submit" value="Submit" />
+    </form>
+</section>
