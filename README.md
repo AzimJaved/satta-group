@@ -1,3 +1,3 @@
-# satta-group
+# Satta Application
 
-Help in calculating the points of friendly satta being placed in satta-group
+Satta group Application

@@ -5,9 +5,7 @@ const hbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = process.env.PORT || 3000;
-
-const scraper = require('./util/scraper.js')
-const seriesId = 8089; // World cup
+const cal = require('./util/calculate')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -26,18 +24,13 @@ app.engine('hbs', hbs({
     ]
 }))
 
-
-// scraper.fetchHtml().then( (html) => {
-//     var scoreboard = scraper.parseHtml(html)
-//     console.log(scoreboard)
-// })
-
 app.get('/', (req,res) => {
     res.render('index',{
         title : 'Satta Group'
     })  
 })
 
+cal.calculate();
 app.post('/teams', (req,res) =>{
     let data = req.body
     var teams = JSON.parse(fs.readFileSync('./teams/teams.json').toString())
