@@ -33,7 +33,7 @@ app.get('/', (req,res) => {
 app.post('/teams', (req,res) =>{
     let data = req.body
     var teams = JSON.parse(fs.readFileSync('./teams/teams.json').toString())
-    teams[data.playerName] = data
+    teams[data.name] = data
     fs.writeFileSync('./teams/teams.json', JSON.stringify(teams, null, 2))
     res.render('success', {
         title : 'Success'

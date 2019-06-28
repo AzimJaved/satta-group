@@ -6,7 +6,6 @@
             var players = _data = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
     "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  ]
         players.forEach( (player) =>{
-         //   var txt = "<div class='card-panel lime accent-1'><p><label><input type='checkbox' name='players' class='filled-in' value=''"+player+"'/><span><h5>"+player+"</h5></span></label></p></div>"
             var txt = '<div class="card-panel lime accent-1"><p><label><input type="checkbox" name="players" value="' +player+'" /> <span>'+player+'</label></p></span></div><br>'
             html += txt;
         })
@@ -18,13 +17,13 @@
     <form method="POST" action="/teams" id="tmform">
         <div id="fmcheckbox">
         </div>
-        <div class="input-field col s6">
-          <input id="Your Name" type="text" class="validate">
+        <div class="input-field">
+          <input id="name" type="text" name="name" class="validate">
           <label for="name">Name</label>
         </div>
         <br>
         <br>
-        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+        <button class="btn waves-effect waves-light" type="submit">Submit
             <i class="material-icons right">send</i>
         </button>
     </form>
