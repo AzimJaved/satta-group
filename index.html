@@ -1,15 +1,19 @@
+<!DOCTYPE HTML>
 <html>
     <head>
         <script>
-            var html = "";
-            var players = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
-                    "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  
-        ]
-        players.forEach( (player) =>{
-            var txt = '<input type="checkbox" value="' +player+'">'+player+'</input>'
-            html += txt;
-        })
-        document.getElementById('tmform').innerHTML += html;
+            function onLoad(){
+                var html = "";
+                var players = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
+                        "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  
+            ]
+            players.forEach( (player) =>{
+                var txt = '<input type="checkbox" value="' +player+'">'+player+'</input><br>'
+                html += txt;
+            })
+            document.getElementById('fmcheckbox').innerHTML += html;
+        }
+        window.onload = onLoad;
         </script>
         <title>
             Satta Group
@@ -17,6 +21,8 @@
     </head>
     <body>
         <form method="POST" action="/team" id="tmform">
-            <input type="text" style="display:hidden" value="PlayerName">
-        </form>
+            <div id="fmcheckbox">
+            </div>
+            <input type="text" style="display:none" value="PlayerName">
+            <input type="submit" value="Submit">
     </body>
