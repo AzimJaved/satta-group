@@ -8,7 +8,7 @@
                         "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  
             ]
             players.forEach( (player) =>{
-                var txt = '<input type="checkbox" value="' +player+'">'+player+'</input><br>'
+                var txt = '<input type="checkbox" name="players" value="' +player+'">'+player+'</input><br>'
                 html += txt;
             })
             document.getElementById('fmcheckbox').innerHTML += html;
@@ -20,9 +20,10 @@
         </title>
     </head>
     <body>
-        <form method="POST" action="/team" id="tmform">
+        <form method="POST" action="/teams" id="tmform">
             <div id="fmcheckbox">
             </div>
-            <input type="text" style="display:none" value="PlayerName">
-            <input type="submit" value="Submit">
+            <input type="text" style="display:none" value="PlayerName" name="playerName" />
+            <input type="submit" value="Submit" />
+        </form>
     </body>
