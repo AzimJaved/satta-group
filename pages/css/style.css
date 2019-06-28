@@ -35,10 +35,24 @@ body {
   }
 }
 
+#success {
+  position : absolute;
+  left : 50%;
+  top: 50%;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #585858;
+}
 
-.Heading {
-  font-size:50px;
-  font-weight: 700;
+#header {
+  left : 50%;
+  top: 50%;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #585858;
+  text-decoration: none;
+}
+#footer {
+  left : 50%;
+  top: 50%;
   font-family: 'Source Sans Pro', sans-serif;
   color: #585858;
   text-decoration: none;

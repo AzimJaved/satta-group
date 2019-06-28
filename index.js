@@ -30,7 +30,6 @@ app.get('/', (req,res) => {
     })  
 })
 
-cal.calculate();
 app.post('/teams', (req,res) =>{
     let data = req.body
     var teams = JSON.parse(fs.readFileSync('./teams/teams.json').toString())
