@@ -3442,7 +3442,7 @@ table span.badge {
 
 @media only screen and (min-width: 993px) {
   .container {
-    width: 70%;
+    width: 25%;
   }
 }
 
@@ -4736,7 +4736,7 @@ small {
   transition: -webkit-box-shadow .25s;
   transition: box-shadow .25s;
   transition: box-shadow .25s, -webkit-box-shadow .25s;
-  padding: 24px;
+  padding: 15px;
   margin: 0.5rem 0 1rem 0;
   border-radius: 2px;
   background-color: #fff;
