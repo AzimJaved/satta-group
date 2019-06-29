@@ -1,0 +1,11 @@
+{
+    "firebaseClientAPIKey": "AIzaSyB5n9aD0kuLaZMFB9lfUS0iEDQZuiURgCo",
+    "firebaseServerAPIKey": "AIzaSyDvu4G7Z62WqJfb-aMwQa2YGOCGSTUnxtk",
+    "firebase": {
+        "authDomain": "satta-group.firebaseapp.com",
+        "databaseURL": "https://satta-group.firebaseio.com",
+        "projectId": "satta-group",
+        "storageBucket": "satta-group.appspot.com",
+        "messagingSenderId": "883522861433"
+    }
+}
