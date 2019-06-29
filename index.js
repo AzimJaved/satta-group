@@ -5,10 +5,8 @@ const hbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = process.env.PORT || 3000;
-const cal = require('./util/calculate')
+const calc = require('./util/calculate')
 const db = require('./util/Database').database
-
-const matchId = "NzVsAus" 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -33,20 +31,46 @@ app.get('/', (req,res) => {
     })  
 })
 
-app.post('/teams', (req,res) =>{
+app.post('/sattaSubmit', (req,res) =>{
     let data = req.body
-    db.ref(matchId +' /'+ data.name).set(data, function(error){
-        if(!error){
-            res.render('success', {
-                title : 'Success'
+    db.ref('/currentMatch').once("value",function(snapshot){
+        let matchId = snapshot.val().matchId 
+        db.ref(matchId +' /'+ data.name).set(data, function(error){
+            if(!error){
+                res.render('success', {
+                    title : 'Success - Satta Group'
+                }
+            )}
+            else{ 
+                res.send("An error occured")
+                console.log(error)        
             }
-        )}
-        else{ 
-            res.send("An error occured")
-            console.log(error)        
-        }
+        })
+    })    
+})
+
+app.get('/points', (req, res) => {
+    res.render("points",{
+        title: "Points Table - Satta Group"
     })
-    
+})
+
+app.get('/pointsTable', (req, res) => {
+    db.ref('/points').once("value", function(snapshot){ 
+        let data = snapshot.val();
+        if( (Date.now() - data.time) >= 300000){
+            calc.calculate();
+            res.redirect('/points')
+        }
+        res.json(data)  
+    })
+})
+
+app.get('/teams', (req,res)=> {
+    db.ref('/currentMatch').once("value", function(snapshot){
+        let data = snapshot.val();
+        res.json(data)  
+    })
 })
 
 app.listen(PORT, () => {

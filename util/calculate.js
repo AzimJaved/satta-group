@@ -1,8 +1,8 @@
 const scraper = require('./scraper.js')
 const GSheets = require('./GSheets.js')
+const db = require('./Database').database
 exports.calculate = () => {
    // let teams = JSON.parse(fs.readFileSync('../teams/teams.json').toString())
-    let result = {}, scores = {}
     // result = { batsmen:
     //     { 'Liton Das': { name: 'Liton Das', runs: '16' },
     //       'Tamim Iqbal': { name: 'Tamim Iqbal', runs: '36' },
@@ -36,38 +36,33 @@ exports.calculate = () => {
     //       'Shakib Al Hasan': { name: 'Shakib Al Hasan', wickets: '5' },
     //       'Mehidy Hasan Miraz': { name: 'Mehidy Hasan Miraz', wickets: '0' },
     //       'Mosaddek Hossain': { name: 'Mosaddek Hossain', wickets: '1' } } }
-          teams = {
-            "Azim" : {
-              "name" : "Azim",
-              "players" : [ "Gulbadin Naib", "Mohammad Nabi", "Rashid Khan", "Babar Azam", "Mohammad Hafeez", "Sarfaraz Ahmed", "Mohammad Amir", "Wahab Riaz" ]
-            },
-            "Hamza" : {
-              "name" : "Hamza",
-              "players" : [ "Mohammad Nabi", "Rashid Khan", "Babar Azam", "Mohammad Hafeez", "Haris Sohail", "Sarfaraz Ahmed", "Mohammad Amir", "Wahab Riaz" ]
-            },
-            "Sanskar" : {
-              "name" : "Sanskar",
-              "players" : [ "Mohammad Nabi", "Rashid Khan", "Fakhar Zaman", "Babar Azam", "Haris Sohail", "Sarfaraz Ahmed", "Mohammad Amir", "Shaheen Afridi" ]
-            }
-          }
-    scraper.fetchHtml().then((html) => {
-        result = scraper.parseHtml(html)
-        for(team in teams){
-            let teamPlayers = teams[team].players, points = 0;
-            teamPlayers.forEach(player => {
-                if(result.batsmen[player]!=null){
-                    points += parseInt(result.batsmen[player].runs)
-                }
-                if(result.bowlers[player]!=null){
-                    points+= parseInt(result.bowlers[player].wickets*20)
-                }
-            });
-            GSheets.AppendToSpreadsheet([{
-                ssId : '1RukCXKwioYsgMqJoFMjvf9md0r5airmYWV8k_PzzRNI',
-                sheet : 'satta',
-                values : [ team, points ]
-            }])
-            scores[team] = points
-        } 
+    
+    let result = {}, scores = {}
+    db.ref('/currentMatch').once("value", function(snapshot){
+      let matchId = snapshot.val().matchId
+      let matchUrl = snapshot.val().matchUrl
+      db.ref('/'+matchId).once("value", function(snapshot){
+        let teams = snapshot.val();
+        scraper.fetchHtml(matchUrl).then((html) => {
+            result = scraper.parseHtml(html)
+            for(team in teams){
+                let teamPlayers = teams[team].players, points = 0;
+                teamPlayers.forEach(player => {
+                    if(result.batsmen[player]!=null){
+                        points += parseInt(result.batsmen[player].runs)
+                    }
+                    if(result.bowlers[player]!=null){
+                        points+= parseInt(result.bowlers[player].wickets*20)
+                    }
+                });
+                GSheets.AppendToSpreadsheet([{
+                    ssId : '1RukCXKwioYsgMqJoFMjvf9md0r5airmYWV8k_PzzRNI',
+                    sheet : 'satta',
+                    values : [ team, points ]
+                }])
+                scores[team] = points
+            } 
+        })
+      })  
     })
 }
