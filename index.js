@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = process.env.PORT || 3000;
 const cal = require('./util/calculate')
+const db = require('./util/Database').database
+
+const matchId = "test" 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -32,12 +35,18 @@ app.get('/', (req,res) => {
 
 app.post('/teams', (req,res) =>{
     let data = req.body
-    var teams = JSON.parse(fs.readFileSync('./teams/teams.json').toString())
-    teams[data.name] = data
-    fs.writeFileSync('./teams/teams.json', JSON.stringify(teams, null, 2))
-    res.render('success', {
-        title : 'Success'
+    db.ref(matchId +' /'+ data.name).set(data, function(error){
+        if(!error){
+            res.render('success', {
+                title : 'Success'
+            }
+        )}
+        else{ 
+            res.send("An error occured")
+            console.log(error)        
+        }
     })
+    
 })
 
 app.listen(PORT, () => {
