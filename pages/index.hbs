@@ -6,7 +6,7 @@
             var players = _data = [ "Liton Das","Tamim Iqbal", "Shakib Al Hasan","Mushfiqur Rahim","Soumya Sarkar","Mahmudullah","Mosaddek Hossain","Mohammad Saifuddin","Mehidy Hasan Miraz","Mashrafe Mortaza","Mustafizur Rahman",
     "Gulbadin Naib","Rahmat Shah", "Hasmatullah Shahidi","Asghar Afghan","Mohammad Nabi","Samiullah Shinwari","Ikram Alikhil","Najbullah Zadran","Rashid Khan","Dawlat Zadran","Mujeeb Ur Rahman"  ]
         players.forEach( (player) =>{
-            var txt = '<div class="card-panel lime accent-1"><p><label><input type="checkbox" name="players" value="' +player+'" /> <span>'+player+'</label></p></span></div><br>'
+            var txt = '<div class="card-panel  grey darken-3"> <p><label><input type="checkbox" name="players" value="' +player+'" /> <span class = "white-text">'+player+'</label></p></span></div><br>'
             html += txt;
         })
         document.getElementById('fmcheckbox').innerHTML += html;
@@ -23,7 +23,7 @@
         </div>
         <br>
         <br>
-        <button class="btn waves-effect waves-light" type="submit">Submit
+        <button class="btn waves-effect  yellow accent-2  grey-text text-darken-4" type="submit">Submit
             <i class="material-icons right">send</i>
         </button>
     </form>
