@@ -70,7 +70,7 @@ exports.parseHtml = (matchHtml) => {
 exports.fetchHtml = () => {
     return new Promise( (resolve, reject) =>   {
         // var matchUrl =  'https://www.espncricinfo.com/series/'+seriesId+'/scorecard/'+matchId+'/'+matchDesc;
-        var matchUrl = 'https://www.espncricinfo.com/series/8039/scorecard/1144513/afghanistan-vs-bangladesh-31st-match-icc-cricket-world-cup-2019' 
+        var matchUrl = 'https://www.espncricinfo.com/series/8039/scorecard/1144518/afghanistan-vs-pakistan-36th-match-icc-cricket-world-cup-2019' 
 
         request.get(matchUrl, (error, response, html) =>{
             if(!error){
