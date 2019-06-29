@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 const cal = require('./util/calculate')
 const db = require('./util/Database').database
 
-const matchId = "PakVAfg" 
+const matchId = "NzVsAus" 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
