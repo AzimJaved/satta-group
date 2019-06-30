@@ -1,3 +1,5 @@
+{{> header }}
+
 <section>
     <script>
         var html = ""
@@ -5,7 +7,7 @@
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                let points = xhttp.response
+                let points = xhttp.response.players
                 for(player in points){
                     let txt = "<tr><td>"+player+"</td><td>"+points[player]+"</td></tr>"
                     html += txt
@@ -19,6 +21,10 @@
         }
         window.onload = onLoad
     </script>
-    <div id="pointsTable">  
+    <div class = "container">
+        <div id="pointsTable">  
+        </div>
     </div>
 </section>
+
+{{> footer }}

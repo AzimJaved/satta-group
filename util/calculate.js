@@ -36,15 +36,15 @@ exports.calculate = () => {
     //       'Shakib Al Hasan': { name: 'Shakib Al Hasan', wickets: '5' },
     //       'Mehidy Hasan Miraz': { name: 'Mehidy Hasan Miraz', wickets: '0' },
     //       'Mosaddek Hossain': { name: 'Mosaddek Hossain', wickets: '1' } } }
-    
-    let result = {}, scores = {}
-    db.ref('/currentMatch').once("value", function(snapshot){
-      let matchId = snapshot.val().matchId
-      let matchUrl = snapshot.val().matchUrl
-      db.ref('/'+matchId).once("value", function(snapshot){
-        let teams = snapshot.val();
+
+    db.ref('/').once("value", function(snapshot){
+        let data = snapshot.val();
+        let matchId = data.currentMatch.matchId
+        let matchUrl = data.currentMatch.matchUrl
+        let teams = data[matchId];
+        let pointsTable = data.points.players
         scraper.fetchHtml(matchUrl).then((html) => {
-            result = scraper.parseHtml(html)
+            let result = scraper.parseHtml(html)
             for(team in teams){
                 let teamPlayers = teams[team].players, points = 0;
                 teamPlayers.forEach(player => {
@@ -60,9 +60,12 @@ exports.calculate = () => {
                     sheet : 'satta',
                     values : [ team, points ]
                 }])
-                scores[team] = points
-            } 
+                pointsTable[team]+= points
+            }
+            if(data.liveScorecard){
+                pointsTable['time'] = Date.now()
+                db.ref('/points').set(pointsTable)
+            }
         })
-      })  
     })
 }
