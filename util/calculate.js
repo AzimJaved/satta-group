@@ -1,5 +1,4 @@
 const scraper = require('./scraper.js')
-const GSheets = require('./GSheets.js')
 const db = require('./Database').database
 exports.calculate = () => {
    // let teams = JSON.parse(fs.readFileSync('../teams/teams.json').toString())
@@ -55,11 +54,6 @@ exports.calculate = () => {
                         points+= parseInt(result.bowlers[player].wickets*20)
                     }
                 });
-                GSheets.AppendToSpreadsheet([{
-                    ssId : '1RukCXKwioYsgMqJoFMjvf9md0r5airmYWV8k_PzzRNI',
-                    sheet : 'satta',
-                    values : [ team, points ]
-                }])
                 pointsTable[team]+= points
             }
             if(data.liveScorecard){
