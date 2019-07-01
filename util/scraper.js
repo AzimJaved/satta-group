@@ -6,30 +6,27 @@ exports.parseHtml = (matchHtml) => {
     var bowlersJson = {}
     var batsmen = [  ]
     var bowlers = [  ]
-    /* TODO : Also need to add players who did not bat or ball over here or suitably adjust in later code */
     // First innings
     flag = true
     $("[id='gp-inning-00']").find("[class='wrap batsmen']").each( function(index, element){
         batsmen.push(element)
     })
-    $("[id='gp-inning-00']").find("tr").each( function(index, element){
-        if(flag){
-            flag = false 
-        }
-        else {bowlers.push(element)}
+    $("[id='gp-inning-00']").find("[class='scorecard-section bowling']").each( function(index, element){
+           bowlers.push(element.children[0].children[1].children)
     })
     // Second Innings
     flag = true
     $("[id='gp-inning-01']").find("[class='wrap batsmen']").each( function(index, element){
         batsmen.push(element)
     })
-    $("[id='gp-inning-01']").find("tr").each( function(index, element){
+    $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){
         if(flag){
             flag = false 
         }
-        else {bowlers.push(element)}
+        else{
+            bowlers.push(element.children[0].children[1].children)
+        }
     })
-    console.log(bowlers.length)
     // generate batsmen json.
     for(let i=0; i<batsmen.length; i++){
         var name = batsmen[i].children[0].children[0].children[0].data
@@ -46,8 +43,8 @@ exports.parseHtml = (matchHtml) => {
         batsmenJson[batsmanJson.name] = batsmanJson
     }
     // generate bowler json
-    for(let i=0; i<bowlers.length; i++){
-        var name = bowlers[i].children[0].children[0].children[0].data
+    for(let i=0; i<bowlers[0].length; i++){
+        var name = bowlers[0][i].children[0].children[0].children[0].data
         if(name.includes(' †')){
             name = name.split(' †')[0]
         }
@@ -56,7 +53,7 @@ exports.parseHtml = (matchHtml) => {
         }
         var bowlerJson = {
             name : name,
-            wickets: bowlers[i].children[5].children[0].data,
+            wickets: bowlers[0][i].children[5].children[0].data,
         }
         bowlersJson[bowlerJson.name] = bowlerJson
     }
@@ -64,6 +61,7 @@ exports.parseHtml = (matchHtml) => {
         batsmen : batsmenJson,
         bowlers : bowlersJson
     }
+ //   console.log(scorecard)
     return scorecard;
 }
 

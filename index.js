@@ -58,10 +58,10 @@ app.get('/points', (req, res) => {
 app.get('/pointsTable', (req, res) => {
     db.ref('/points').once("value", function(snapshot){ 
         let data = snapshot.val();
-        if( ((Date.now() - data.time) >= 300000) && data.liveScorecard){
-            calc.calculate();
-            res.redirect('/points')
-        }
+    //    if( ((Date.now() - data.time) >= 300000) && data.liveScorecard){
+    //        calc.calculate();
+    //    }
+        console.log(data)   
         res.json(data) 
     })
 })
