@@ -38,20 +38,20 @@ exports.calculate = () => {
 
    db.ref('/').once("value", function(snapshot){
         let data = snapshot.val();
-        let matchId = data.currentMatch.matchId + ' '
+        let matchId = data.currentMatch.matchId
         let matchUrl = data.currentMatch.matchUrl
         let teams = data[matchId];
         // console.log(matchId)
         // console.log(data)
-        let pointsTable = data.points
-        // var pointsTable = {
-        //     "players" : {"AQIB": 0,
-        //     "Hamza": 0,
-        //     "Sanskar":0,
-        //     "Azim":0,
-        //     "Shrey":0
-        //     }
-        // }
+        //let pointsTable = data.points
+        var pointsTable = {
+            "players" : {"AQIB": 0,
+            "Hamza": 0,
+            "Sanskar":0,
+            "Azim":0,
+            "Shrey":0
+            }
+        }
         //let matchUrl = "https://www.espncricinfo.com/series/8039/scorecard/1144520/england-vs-india-38th-match-icc-cricket-world-cup-2019";
         scraper.fetchHtml(matchUrl).then((html) => {
             let result = scraper.parseHtml(html)
@@ -65,14 +65,11 @@ exports.calculate = () => {
                         points+= parseInt(result.bowlers[player].wickets*20)
                     }
                 });
-        //        console.log(team +'/'+ points)
-                pointsTable.players[team] += points
+                console.log(team +'/'+ points)
+                pointsTable[team] += points
             }
-        //    console.log(pointsTable)
-            if(false){
-                pointsTable['time'] = Date.now()
-                //db.ref('/points').set(pointsTable)
-            }
+            console.log(pointsTable)
+            pointsTable['time'] = Date.now()
         })
     })
 }

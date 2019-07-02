@@ -20,12 +20,7 @@ exports.parseHtml = (matchHtml) => {
         batsmen.push(element)
     })
     $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){
-        if(flag){
-            flag = false 
-        }
-        else{
             bowlers.push(element.children[0].children[1].children)
-        }
     })
     // generate batsmen json.
     for(let i=0; i<batsmen.length; i++){
@@ -43,25 +38,27 @@ exports.parseHtml = (matchHtml) => {
         batsmenJson[batsmanJson.name] = batsmanJson
     }
     // generate bowler json
-    for(let i=0; i<bowlers[0].length; i++){
-        var name = bowlers[0][i].children[0].children[0].children[0].data
-        if(name.includes(' †')){
-            name = name.split(' †')[0]
+    for(let j=0; j<bowlers.length; j++){
+        for(let i=0; i<bowlers[j].length; i++){
+            var name = bowlers[j][i].children[0].children[0].children[0].data
+            if(name.includes(' †')){
+                name = name.split(' †')[0]
+            }
+            if(name.includes(' (c)')){
+                name = name.split(' (c)')[0]
+            }
+            var bowlerJson = {
+                name : name,
+                wickets: bowlers[j][i].children[5].children[0].data,
+            }
+            bowlersJson[bowlerJson.name] = bowlerJson
         }
-        if(name.includes(' (c)')){
-            name = name.split(' (c)')[0]
-        }
-        var bowlerJson = {
-            name : name,
-            wickets: bowlers[0][i].children[5].children[0].data,
-        }
-        bowlersJson[bowlerJson.name] = bowlerJson
     }
     var scorecard = {
         batsmen : batsmenJson,
         bowlers : bowlersJson
     }
- //   console.log(scorecard)
+    console.log(scorecard)
     return scorecard;
 }
 

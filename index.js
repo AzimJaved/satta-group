@@ -61,7 +61,7 @@ app.get('/pointsTable', (req, res) => {
     //    if( ((Date.now() - data.time) >= 300000) && data.liveScorecard){
     //        calc.calculate();
     //    }
-        console.log(data)   
+    //    console.log(data)   
         res.json(data) 
     })
 })
