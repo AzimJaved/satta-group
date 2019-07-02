@@ -17,13 +17,8 @@ exports.parseHtml = (matchHtml) => {
     $("[id='gp-inning-01']").find("[class='wrap batsmen']").each( function(index, element){
         batsmen.push(element)
     })
-<<<<<<< HEAD
     $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){ 
         bowlers.push(element.children[0].children[1].children)
-=======
-    $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){
-            bowlers.push(element.children[0].children[1].children)
->>>>>>> 614734234fd01401d1fb87e1daa5e7621c880991
     })
     // generate batsmen json.
     for(let i=0; i<batsmen.length; i++){
@@ -61,10 +56,6 @@ exports.parseHtml = (matchHtml) => {
         batsmen : batsmenJson,
         bowlers : bowlersJson
     }
-<<<<<<< HEAD
-=======
-    console.log(scorecard)
->>>>>>> 614734234fd01401d1fb87e1daa5e7621c880991
     return scorecard;
 }
 
