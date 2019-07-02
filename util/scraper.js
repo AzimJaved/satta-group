@@ -7,7 +7,6 @@ exports.parseHtml = (matchHtml) => {
     var batsmen = [  ]
     var bowlers = [  ]
     // First innings
-    flag = true
     $("[id='gp-inning-00']").find("[class='wrap batsmen']").each( function(index, element){
         batsmen.push(element)
     })
@@ -15,17 +14,11 @@ exports.parseHtml = (matchHtml) => {
            bowlers.push(element.children[0].children[1].children)
     })
     // Second Innings
-    flag = true
     $("[id='gp-inning-01']").find("[class='wrap batsmen']").each( function(index, element){
         batsmen.push(element)
     })
-    $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){
-        if(flag){
-            flag = false 
-        }
-        else{
-            bowlers.push(element.children[0].children[1].children)
-        }
+    $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each( function(index, element){ 
+        bowlers.push(element.children[0].children[1].children)
     })
     // generate batsmen json.
     for(let i=0; i<batsmen.length; i++){
@@ -43,31 +36,31 @@ exports.parseHtml = (matchHtml) => {
         batsmenJson[batsmanJson.name] = batsmanJson
     }
     // generate bowler json
-    for(let i=0; i<bowlers[0].length; i++){
-        var name = bowlers[0][i].children[0].children[0].children[0].data
-        if(name.includes(' †')){
-            name = name.split(' †')[0]
+    for(let j=0; j<bowlers.length; j++){
+        for(let i=0; i<bowlers[j].length; i++){
+            var name = bowlers[j][i].children[0].children[0].children[0].data
+            if(name.includes(' †')){
+                name = name.split(' †')[0]
+            }
+            if(name.includes(' (c)')){
+                name = name.split(' (c)')[0]
+            }
+            var bowlerJson = {
+                name : name,
+                wickets: bowlers[j][i].children[5].children[0].data,
+            }
+            bowlersJson[bowlerJson.name] = bowlerJson
         }
-        if(name.includes(' (c)')){
-            name = name.split(' (c)')[0]
-        }
-        var bowlerJson = {
-            name : name,
-            wickets: bowlers[0][i].children[5].children[0].data,
-        }
-        bowlersJson[bowlerJson.name] = bowlerJson
     }
     var scorecard = {
         batsmen : batsmenJson,
         bowlers : bowlersJson
     }
- //   console.log(scorecard)
     return scorecard;
 }
 
 exports.fetchHtml = (matchUrl) => {
     return new Promise( (resolve, reject) =>   {
-        //var matchUrl = 'https://www.espncricinfo.com/series/8039/scorecard/1144519/australia-vs-new-zealand-37th-match-icc-cricket-world-cup-2019' 
         request.get(matchUrl, (error, response, html) =>{
             if(!error){
                 resolve(html)

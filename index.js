@@ -56,13 +56,12 @@ app.get('/points', (req, res) => {
 })
 
 app.get('/pointsTable', (req, res) => {
-    db.ref('/points').once("value", function(snapshot){ 
+    db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
-    //    if( ((Date.now() - data.time) >= 300000) && data.liveScorecard){
-    //        calc.calculate();
-    //    }
-        console.log(data)   
-        res.json(data) 
+        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000) && data.currentMatch.liveScorecard){
+            calc.calculate();
+        }
+        res.json(currentPoints(data.currentMatch.matchPoints, data.points)) 
     })
 })
 
@@ -77,3 +76,12 @@ app.listen(PORT, () => {
     console.log("Booted")
 })
 
+function currentPoints(livePoints, pointsTable){
+    var points = {
+        "players" : {}
+    }
+    for(player in pointsTable.players){
+        points.players[player] = pointsTable.players[player] + livePoints.players[player]
+    }
+    return points;
+}
