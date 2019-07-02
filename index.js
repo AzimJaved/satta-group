@@ -58,10 +58,18 @@ app.get('/points', (req, res) => {
 app.get('/pointsTable', (req, res) => {
     db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
+<<<<<<< HEAD
         if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000) && data.currentMatch.liveScorecard){
             calc.calculate();
         }
         res.json(currentPoints(data.currentMatch.matchPoints, data.points)) 
+=======
+    //    if( ((Date.now() - data.time) >= 300000) && data.liveScorecard){
+    //        calc.calculate();
+    //    }
+    //    console.log(data)   
+        res.json(data) 
+>>>>>>> 614734234fd01401d1fb87e1daa5e7621c880991
     })
 })
 
