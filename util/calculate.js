@@ -34,7 +34,7 @@ exports.calculate = () => {
             if(data.currentMatch.liveScoreboard){
                 db.ref('/currentMatch/matchPoints').set(livePoints)
             }
-            if(data.currentMatch.completion){
+            else if(data.currentMatch.completion){
                 db.ref('/points').set(currentPoints(livePoints, pointsTable))
             }
             pointsTable['time'] = Date.now()
