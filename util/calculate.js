@@ -7,15 +7,7 @@ exports.calculate = () => {
         let matchUrl = data.currentMatch.matchUrl
         let teams = data[matchId];
         let pointsTable = data.points
-        var livePoints = {
-            "players" : {
-                "AQIB": 0,
-                "Hamza": 0,
-                "Sanskar":0,
-                "Azim":0,
-                "Shrey":0
-            }
-        }
+        var livePoints = data.currentMatch.matchPoints
         scraper.fetchHtml(matchUrl).then((html) => {
             let result = scraper.parseHtml(html)
             for(team in teams){
@@ -37,7 +29,6 @@ exports.calculate = () => {
             else if(data.currentMatch.completion){
                 db.ref('/points').set(currentPoints(livePoints, pointsTable))
             }
-            pointsTable['time'] = Date.now()
         })
     })
 }

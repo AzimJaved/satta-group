@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const fs = require('fs');
 const hbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path')
@@ -61,17 +60,30 @@ app.get('/points', (req, res) => {
 app.get('/pointsTable', (req, res) => {
     db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
-        if( (((Date.now() - data.currentMatch.matchPoints.time) >= 300000) && data.currentMatch.liveScoreboard) || data.currentMatch.completion){
+        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
             calc.calculate();
         }
         res.json(currentPoints(data.currentMatch.matchPoints, data.points)) 
     })
 })
 
-app.get('/teams', (req,res)=> {
+app.get('/matchTeams', (req,res)=> {
     db.ref('/currentMatch').once("value", function(snapshot){
         let data = snapshot.val();
         res.json(data)  
+    })
+})
+
+app.get('/teams', (req, res) =>{
+    res.render("teams", {
+        title : "Teams - Satta Group"
+    })
+})
+
+app.get('/fetchTeams', (req, res) => {
+    db.ref('/').once("value", function(snapshot){
+        let data = snapshot.val()
+        res.json(data[data.currentMatch.matchId])
     })
 })
 

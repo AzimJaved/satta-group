@@ -1,0 +1,27 @@
+<section>
+    <script>
+        function onLoad(){
+            var xhttp = new XMLHttpRequest();
+            var html = ""
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    let users = xhttp.response
+                    for(user in users){
+                        let txt = "<h2>"+user+"</h2><ul>"
+                        users[user].players.forEach(player => {
+                            txt += "<li>"+player+"</li>"
+                        })
+                        html += txt + "</ul>"
+                    }
+                    document.getElementById("bodyContainer").innerHTML = html
+                }
+            }
+            xhttp.responseType = "json"
+            xhttp.open("GET", "/fetchTeams", true);
+            xhttp.send();
+        }
+        window.onload = onLoad
+    </script>
+    <div class="container" id="bodyContainer">
+    </div>
+</section>
