@@ -34,18 +34,21 @@ app.get('/', (req,res) => {
 app.post('/sattaSubmit', (req,res) =>{
     let data = req.body
     db.ref('/currentMatch').once("value",function(snapshot){
-        let matchId = snapshot.val().matchId 
-        db.ref(matchId +' /'+ data.name).set(data, function(error){
-            if(!error){
-                res.render('success', {
-                    title : 'Success - Satta Group'
+        let dbData = snapshot.val()
+        let matchId = dbData.matchId
+        if(dbData.sattaOn){
+            db.ref(matchId +' /'+ data.name).set(data, function(error){
+                if(!error){
+                    res.render('success', {
+                        title : 'Success - Satta Group'
+                    }
+                )}
+                else{ 
+                    res.send("An error occured")
+                    console.log(error)        
                 }
-            )}
-            else{ 
-                res.send("An error occured")
-                console.log(error)        
-            }
-        })
+            })
+        }
     })    
 })
 

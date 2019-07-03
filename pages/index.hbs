@@ -2,7 +2,6 @@
 <section>
     <script>
         function onLoad(){
-            var html = "";
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -10,14 +9,12 @@
                 if(xhttp.response.sattaOn){
                     players.forEach( (player) =>{
                         var txt = '<div class="card-panel grey darken-3"> <p><label><input type="checkbox" name="players" value="' +player+'" /> <span class = "white-text">'+player+'</label></p></span></div><br>'
-                        html += txt;
+                        document.getElementById('fmcheckbox').innerHTML += txt;
                     })
                 }
                 else {
-                    var txt = "<p>Satta is off currently.</p>"
-                    document.getElementById('tmform').style = "display:none"
+                    document.getElementById("bodyContainer").innerHTML = "<p>Satta is off currently.</p>"
                 }
-            document.getElementById('fmcheckbox').innerHTML += html;
             }
         }
         xhttp.responseType = "json"
@@ -26,7 +23,7 @@
     }
     window.onload = onLoad;
     </script>
-    <div class="container">
+    <div class="container" id="bodyContainer">
     <form method="POST" action="/sattaSubmit" id="tmform">
         <div id="fmcheckbox">
         </div>
