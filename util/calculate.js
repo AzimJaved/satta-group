@@ -3,7 +3,7 @@ const db = require('./Database').database
 exports.calculate = () => {
     db.ref('/').once("value", function(snapshot){
         let data = snapshot.val();
-        let matchId = data.currentMatch.matchId
+        let matchId = data.currentMatch.matchId + ' '
         let matchUrl = data.currentMatch.matchUrl
         let teams = data[matchId];
         let pointsTable = data.points
@@ -37,7 +37,6 @@ exports.calculate = () => {
             if(data.currentMatch.completion){
                 db.ref('/points').set(currentPoints(livePoints, pointsTable))
             }
-            console.log(pointsTable)
             pointsTable['time'] = Date.now()
         })
     })
