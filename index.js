@@ -36,7 +36,7 @@ app.post('/sattaSubmit', (req,res) =>{
         let dbData = snapshot.val()
         let matchId = dbData.matchId
         if(dbData.sattaOn){
-            db.ref(matchId +' /'+ data.name).set(data, function(error){
+            db.ref(matchId +'/'+ data.name).set(data, function(error){
                 if(!error){
                     res.render('success', {
                         title : 'Success - Satta Group'
