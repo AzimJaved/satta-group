@@ -32,7 +32,6 @@
         xhttp.send(); 
     }
     function checkboxHandler(element){
-        console.log(element.className)
         if(element.checked){
             switch(element.className){
                 case 'batsmen' : numbers.batsmen++;
@@ -58,7 +57,6 @@
             }
         }
         checkReady();
-        console.log(numbers)
     }
     function checkReady(){
         if(numbers.batsmen==3 && numbers.bowlers==3 && numbers.allrounders==1 && numbers.wicketkeepers==1){
