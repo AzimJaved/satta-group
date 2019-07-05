@@ -40,7 +40,7 @@ function currentPoints(livePoints, pointsTable){
     var points = {
         "players" : {}
     }
-    for(player in pointsTable.players){
+    for(player in livePoints.players){
         points.players[player] = pointsTable.players[player] + livePoints.players[player]
     }
     return points;
