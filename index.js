@@ -62,11 +62,17 @@ app.get('/pointsTable', (req, res) => {
         let data = snapshot.val();
         if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
             calc.calculate().then((livePoints) => {
-                res.json(currentPoints(livePoints, data.points))
+                res.json( {
+                    "todaysPoints" : livePoints,
+                    "totalPoints": currentPoints(livePoints, data.points)
+                })
             })
         }
         else {
-            res.json(currentPoints(data.currentMatch.matchPoints, data.points)) 
+                res.json( {
+                "todaysPoints" : data.currentMatch.matchPoints,
+                "totalPoints": currentPoints(data.currentMatch.matchPoints, data.points)
+            })
         }
     })
 })
