@@ -61,7 +61,7 @@ app.get('/points', (req, res) => {
 app.get('/pointsTable', (req, res) => {
     db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
-        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
+        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 30000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
             if(data.currentMatch.multiple){
                 calcM.calculate().then((livePoints) => {
                     res.json( {
