@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path')
 const PORT = process.env.PORT || 3000;
 const calc = require('./util/calculate')
+const calcM = require('./util/calculateM')
 const db = require('./util/Database').database
 
 app.use(bodyParser.json())
@@ -61,12 +62,22 @@ app.get('/pointsTable', (req, res) => {
     db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
         if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
-            calc.calculate().then((livePoints) => {
-                res.json( {
-                    "todaysPoints" : livePoints,
-                    "totalPoints": currentPoints(livePoints, data.points)
+            if(data.currentMatch.multiple){
+                calcM.calculate().then((livePoints) => {
+                    res.json( {
+                        "todaysPoints" : livePoints,
+                        "totalPoints": currentPoints(livePoints, data.points)
+                    })
                 })
-            })
+            }
+            else{
+                calc.calculate().then((livePoints) => {
+                    res.json({
+                        "todaysPoints" : livePoints,
+                        "totalPoints": currentPoints(livePoints, data.points)
+                    })
+                })
+            }   
         }
         else {
                 res.json( {
