@@ -1,0 +1,40 @@
+{{> header }}
+
+<section>
+    <script>
+        function onLoad(){
+            var xhttp = new XMLHttpRequest();
+            var html = ""
+
+        /*    playerWise : 
+                    team : {
+                        player : points,
+                    },
+                    team2 : {
+                        player : points
+                    }
+                }                         */    
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    let pointsTable = xhttp.response
+                    for(team in pointsTable){
+                        let txt = "<h3>"+team+"</h3><table><tr><th>Player</th><th>Points</th></tr>"
+                        for(player in pointsTable[team]){
+                            txt += "<tr><td>"+player+"</td><td>"+pointsTable[team][player]+"</td></tr>"
+                        }
+                        html += txt + "</table><br>"
+                    }
+                    document.getElementById("bodyContainer").innerHTML = html
+                }
+            }
+            xhttp.responseType = "json"
+            xhttp.open("GET", "/playerPoints", true);
+            xhttp.send();
+        }
+        window.onload = onLoad
+    </script>
+    <div class="container" id="bodyContainer">
+    </div>
+</section>
+
+{{> footer }}

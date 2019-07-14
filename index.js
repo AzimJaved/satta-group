@@ -60,7 +60,7 @@ app.get('/points', (req, res) => {
 app.get('/pointsTable', (req, res) => {
     db.ref('/').once("value", function(snapshot){ 
         let data = snapshot.val();
-        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 30000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
+        if( ((Date.now() - data.currentMatch.matchPoints.time) >= 300000 && (data.currentMatch.liveScoreboard) || data.currentMatch.completion)){
                 calc.calculate().then((livePoints) => {
                     res.json( {
                         "todaysPoints" : livePoints,
@@ -94,6 +94,19 @@ app.get('/fetchTeams', (req, res) => {
     db.ref('/').once("value", function(snapshot){
         let data = snapshot.val()
         res.json(data[data.currentMatch.matchId])
+    })
+})
+
+app.get('/playerWisePoints', (req,res) => {
+    res.render("playerPoints", {
+        title : "Player Wise Points - Satta Group"
+    })
+})
+
+app.get('/playerPoints', (req,res) =>{
+    db.ref('/currentMatch/playerPoints').once("value", function(snapshot) {
+        let data = snapshot.val()
+        res.json(data)
     })
 })
 

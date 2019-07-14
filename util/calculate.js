@@ -8,28 +8,41 @@ exports.calculate = () => {
             let matchUrl = data.currentMatch.matchUrl
             let teams = data[matchId];
             let pointsTable = data.points
-            var livePoints = data.currentMatch.matchPoints
+            var pointsJson = {}
+            pointsJson['livePoints'] = data.currentMatch.matchPoints
+            pointsJson['playerWise'] = {}
             scraper.fetchHtml(matchUrl).then((html) => {
                 let result = scraper.parseHtml(html)
                 for(team in teams){
                     let teamPlayers = teams[team].players, points = 0;
+                    let teamPoints = {}
                     teamPlayers.forEach(player => {
                         if(result.batsmen[player]!=null){
                             points += parseInt(result.batsmen[player].runs)
+                            if(points>0){
+                                teamPoints[player] = parseInt(result.batsmen[player].runs)
+                            }
                         }
                         if(result.bowlers[player]!=null){
                             points+= parseInt(result.bowlers[player].wickets*20)
+                            if(points>0){
+                                teamPoints[player] = parseInt(result.bowlers[player].wickets*20)
+                            }
                         }
                     });
-                    livePoints.players[team] = points
+                    pointsJson.playerWise[team] = teamPoints
+                    pointsJson.livePoints.players[team] = points
                 }
-                livePoints['time'] = Date.now()
+                pointsJson.livePoints['time'] = Date.now()
+                data.currentMatch.matchPoints = pointsJson.livePoints
+                data.currentMatch.playerPoints = pointsJson.playerWise
                 if(data.currentMatch.liveScoreboard){
-                    db.ref('/currentMatch/matchPoints').set(livePoints)
-                    resolve(livePoints)
+                    db.ref('/currentMatch/').set(data.currentMatch)
+                    resolve(pointsJson.livePoints)
                 }
                 else if(data.currentMatch.completion){
-                    db.ref('/points').set(currentPoints(livePoints, pointsTable))
+                    db.ref('/points').set(currentPoints(pointsJson.livePoints, pointsTable))
+                    resolve(pointsJson.livePoints)
                 }
             })
         })
