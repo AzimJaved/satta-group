@@ -17,18 +17,15 @@ exports.calculate = () => {
                     let teamPlayers = teams[team].players, points = 0;
                     let teamPoints = {}
                     teamPlayers.forEach(player => {
+                        let point =0;
                         if(result.batsmen[player]!=null){
-                            points += parseInt(result.batsmen[player].runs)
-                            if(points>0){
-                                teamPoints[player] = parseInt(result.batsmen[player].runs)
-                            }
+                            point += parseInt(result.batsmen[player].runs)
                         }
                         if(result.bowlers[player]!=null){
-                            points+= parseInt(result.bowlers[player].wickets*20)
-                            if(points>0){
-                                teamPoints[player] = parseInt(result.bowlers[player].wickets*20)
-                            }
+                            point+= parseInt(result.bowlers[player].wickets*20)
                         }
+                        points+= point
+                        teamPoints[player] = point
                     });
                     pointsJson.playerWise[team] = teamPoints
                     pointsJson.livePoints.players[team] = points
