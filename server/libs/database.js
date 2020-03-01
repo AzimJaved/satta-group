@@ -24,26 +24,37 @@ exports.query = async (queryString) => {
             if (err) {
                 throw err
             }
-            return { result: result, fields: fields }
+            return Promise.resolve({ result: result, fields: fields })
         })
     })
 }
 
-exports.insertQuery = async (data, table, database = `sattagroup`) => {
+exports.insertQuery = async (columns, data, table, database = `sattagroup`) => {
 
     /** 
     * @function insertQuery Performs a simple insert query 
-    * @param data Array of Tuples to be inserted
+    * @param columns Columns being inserted (Double Array)
+    * @param data Array of Tuples to be inserted (Double Array)
     * @param table table name
     * @param database database, sattagroup by default
     */
 
     /*********** BUILD QUERY ***********/
-    let queryString = `INSERT INTO ${database}.${table} VALUES\n`
+    let queryString = `INSERT INTO ${database}.${table} `
+    for (let i = 0; i < columns.length; i++) {
+        queryString += '('
+        for (let j = 0; j < columns[i].length; j++) {
+            queryString += columns[i][j]
+            if (j != columns[i].length - 1) {
+                queryString += ', '
+            }
+        }
+    }
+    queryString += ') VALUES \n'
     for (let i = 0; i < data.length; i++) {
         queryString += '('
         for (let j = 0; j < data[i].length; j++) {
-            queryString += data[i][j]
+            queryString += `'${data[i][j]}'`
             if (j != data[i].length - 1) {
                 queryString += ', '
             }
@@ -54,18 +65,19 @@ exports.insertQuery = async (data, table, database = `sattagroup`) => {
         }
     }
     queryString += ';'
-
     /*********** EXECUTE QUERY ***********/
-    connectionPool.getConnection((err, connection) => {
-        if (err) {
-            throw err
-        }
-        connection.query(queryString, (err, result, fields) => {
-            connection.release()
+    return new Promise((resolve, reject) => {
+        connectionPool.getConnection((err, connection) => {
             if (err) {
-                throw err
+                reject(err)
             }
-            return { result: result, fields: fields }
+            connection.query(queryString, (err, result, fields) => {
+                connection.release()
+                if (err) {
+                    reject(err)
+                }
+                resolve({ result: result, fields: fields })
+            })
         })
     })
 }
@@ -98,16 +110,18 @@ exports.selectQuery = async (attributes, tables, where, database = 'sattagroup')
     queryString += ` WHERE ${where};`
 
     /*********** EXECUTE QUERY ***********/
-    connectionPool.getConnection((err, connection) => {
-        if(err){
-            throw err
-        }
-        connection.query(queryString, (err, result, fields) => {
-            connection.release()
-            if(err){
-                throw err
+    return new Promise((resolve, reject) => {
+        connectionPool.getConnection((err, connection) => {
+            if (err) {
+                reject(err)
             }
-            return {result: result, fields: fields}
+            connection.query(queryString, (err, result, fields) => {
+                connection.release()
+                if (err) {
+                    reject(err)
+                }
+                resolve({ result: result, fields: fields })
+            })
         })
     })
 }
@@ -118,11 +132,11 @@ exports.ping = async () => {
      */
     connectionPool.getConnection((err, connection) => {
         if (err) {
-            throw err
+            reject(err)
         }
         connection.ping(function (err) {
             connection.release()
-            if (err) throw err
+            if (err) reject(err)
             console.log('Database server responded to ping');
         })
     })

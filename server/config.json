@@ -1,3 +1,9 @@
 {
-    
+    "scoring": {
+        "wicket": 20,
+        "run": 1,
+        "catch": 10,
+        "stump": 10,
+        "captainMultiplier": 1.5
+    }
 }
