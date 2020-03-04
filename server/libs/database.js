@@ -10,11 +10,11 @@ const connectionPool = mysql.createPool({
     multipleStatements: true
 });
 
-
+/**
+ * @function query All SQL queries
+ * @param queryString For other queries and complex queries like joins.
+*/
 exports.query = async (queryString) => {
-    /**
-     * @param queryString For other queries and complex queries like joins.
-     */
     connectionPool.getConnection((err, connection) => {
         if (err) {
             throw err
@@ -29,15 +29,17 @@ exports.query = async (queryString) => {
     })
 }
 
+/** 
+ * @function insertQuery Performs a simple insert query 
+ * @param columns Columns being inserted (Double Array)
+ * @param data Array of Tuples to be inserted (Double Array)
+ * @param table table name
+ * @param database database, sattagroup by default
+*/
+
 exports.insertQuery = async (columns, data, table, database = `sattagroup`) => {
 
-    /** 
-    * @function insertQuery Performs a simple insert query 
-    * @param columns Columns being inserted (Double Array)
-    * @param data Array of Tuples to be inserted (Double Array)
-    * @param table table name
-    * @param database database, sattagroup by default
-    */
+
 
     /*********** BUILD QUERY ***********/
     let queryString = `INSERT INTO ${database}.${table} `
@@ -82,15 +84,16 @@ exports.insertQuery = async (columns, data, table, database = `sattagroup`) => {
     })
 }
 
+/**
+ * @function selectQuery Perfoms a simple select query
+ * @param attributes Attributes to select, Array
+ * @param tables Tables from where to select the attributes, Array
+ * @param where The where clause, specified in full, String
+ * @param database Optional, the database.
+ */
+
 exports.selectQuery = async (attributes, tables, where, database = 'sattagroup') => {
 
-    /**
-     * @function selectQuery Perfoms a simple select query
-     * @param attributes Attributes to select, Array
-     * @param tables Tables from where to select the attributes, Array
-     * @param where The where clause, specified in full, String
-     * @param database Optional, the database.
-     */
 
     /*********** BUILD QUERY ***********/
     let queryString = `SELECT `
@@ -126,10 +129,11 @@ exports.selectQuery = async (attributes, tables, where, database = 'sattagroup')
     })
 }
 
+/**
+ * @function ping Check the connection to the database
+*/
 exports.ping = async () => {
-    /**
-     * @function ping Check the connection to the database
-     */
+
     connectionPool.getConnection((err, connection) => {
         if (err) {
             reject(err)

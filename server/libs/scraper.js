@@ -5,13 +5,11 @@ const request = require('request')
  * @todo Try to combine the scoreboard elements to have runs and scores in the same element
  */
 
+/**
+   * @function parseHtml Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
+   * @param matchHtml The HTML code
+   */
 function parseHtml(matchHtml) {
-
-    /**
-     * @function parseHtml Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
-     * @param matchHtml The HTML code
-     */
-
     const $ = cheerio.load(matchHtml)
     var batsmenScore = []
     var bowlersScore = []
@@ -66,11 +64,11 @@ function parseHtml(matchHtml) {
     return { batsmen: batsmenScore, bowlers: bowlersScore }
 }
 
+/**
+ * @function fetchHtml Returns the HTML code of the given url
+ * @param matchUrl URL.
+ */
 async function fetchHtml(matchUrl) {
-    /**
-     * @function fetchHtml Returns the HTML code of the given url
-     * @param matchUrl URL.
-     */
     return new Promise((resolve, reject) => {
         request.get(matchUrl, (err, response, html) => {
             if (err) {

@@ -16,9 +16,10 @@ create table leagueMatch
 
 create table matchPlayer
 (
-	playerId varchar(50) primary key,
+	playerId varchar(50) not null,
     matchId varchar(50) not null,
-    playerName varchar(100) not null
+    playerName varchar(100) not null,
+    primary key (playerId, matchId)
 );
 
 create table userTeam
@@ -26,13 +27,21 @@ create table userTeam
 	username varchar(50) not null,
     matchId varchar(50) not null,
     captain boolean not null,
-    playerId varchar(50) not null
+    playerId varchar(50) not null,
+    primary key (username, matchId, playerId)
 );
 
-create table score
+CREATE TABLE scoringRule (
+    wicket INTEGER NOT NULL,
+    run INTEGER not null,
+    catch INTEGER not null,
+    stump INTEGER not null
+);
+
+
+create table score 
 (
-	username varchar(50) not null,
-    currentScore int,
-    totalScore int
+	username varchar(50) primary key,
+    currentScore integer,
+    totalScore integer
 );
-
