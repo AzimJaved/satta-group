@@ -6,9 +6,9 @@ const request = require('request')
  */
 
 /**
-   * @function parseHtml Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
-   * @param matchHtml The HTML code
-   */
+ * @function parseHtml Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
+ * @param matchHtml The HTML code
+*/
 function parseHtml(matchHtml) {
     const $ = cheerio.load(matchHtml)
     var batsmenScore = []

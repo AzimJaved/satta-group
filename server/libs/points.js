@@ -1,10 +1,10 @@
 const scraper = require('./scraper')
-const scoring = require('../config.json')
+// const scoring = require('../config.json')
 /**
  * @todo Scoring should be on database, changeable by admin
  */
 
-exports.calculate = async (userTeams) => {
+exports.calculate = async (userTeams, scoring) => {
     /*
     Flow: userTeams must include user.username, matchPlayer.playerId, matchPlayer.playerName, match.matchUrl. Key elements are matchId and playerId.
     something like 
@@ -19,7 +19,8 @@ exports.calculate = async (userTeams) => {
         if(pointsTable[userTeam.name] == null){
             pointsTable[userTeam.name] = 0
         }
-        scoreboard[userTeam.playerName]
+        scoreboard.batsmen.forEach(batsman => {
+            
+        })
     })
-
 }
