@@ -1,7 +1,9 @@
 const scraper = require('./scraper')
 // const scoring = require('../config.json')
 /**
- * @todo Scoring should be on database, changeable by admin
+ * @function calculate Calculate team points
+ * @param userTeams UserTeam data. Check Schema in points.js
+ * @param scoring scoring config
  */
 
 exports.calculate = async (userTeams, scoring) => {
@@ -13,14 +15,34 @@ exports.calculate = async (userTeams, scoring) => {
     matchPlayer.playerId = userTeam.playerId AND matchPlayer.matchId = userTeam.matchId AND match.matchId = userTeam.matchId;
 
     */
-    let pointsTable = {}
-    let scoreboard = await scraper.worker(userTeams[0].matchUrl)
-    userTeams.forEach(userTeam => {
-        if(pointsTable[userTeam.name] == null){
-            pointsTable[userTeam.name] = 0
-        }
-        scoreboard.batsmen.forEach(batsman => {
-            
+    /*
+     userTeams schema i hope = {
+         matchUrl: matchUrl
+         users: [
+         {username: username, totalScore: 69, team: [{name: playerName, captain: false}]}
+         ]
+     }
+    */
+    let pointsTable = {}, multiplier = 1
+    let scoreboard = await scraper.worker(userTeams.matchUrl)
+    userTeams.users.forEach(user => {
+        pointsTable[user.username].currentScore = 0
+        pointsTable[user.username].totalScore = user.totalScore
+        user.team.forEach(playerName => {
+            if(playerName.captain){
+                multiplier = scoring.captainMultiplier
+            } else {
+                multiplier = 1
+            }
+            if(scoreboard.batsmen[playerName.name] != null){
+                pointsTable[user.username].currentScore += multiplier*scoring.run*scoreboard.batsmen[playerName.name].runs
+            }
+            if(scoreboard.bowlers[playerName] != null){
+                pointsTable[user.username].currentScore += multiplier*scoring.wicket*scoreboard.bowlers[playerName.name].wickets
+            }
         })
+        pointsTable[user.username].totalScore += pointsTable[user.username].currentScore
     })
+    pointsTable
+    return pointsTable
 }

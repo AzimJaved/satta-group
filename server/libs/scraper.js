@@ -11,8 +11,8 @@ const request = require('request')
 */
 function parseHtml(matchHtml) {
     const $ = cheerio.load(matchHtml)
-    var batsmenScore = []
-    var bowlersScore = []
+    var batsmenScore = {}
+    var bowlersScore = {}
     var batsmen = []
     var bowlers = []
     // First innings
@@ -42,7 +42,7 @@ function parseHtml(matchHtml) {
             name: name,
             runs: batsmen[i].children[2].children[0].data
         }
-        batsmenScore.push(batsmanJson)
+        batsmenScore[name] = batsmanJson
     }
     // generate bowler json
     for (let j = 0; j < bowlers.length; j++) {
@@ -58,7 +58,7 @@ function parseHtml(matchHtml) {
                 name: name,
                 wickets: bowlers[j][i].children[5].children[0].data,
             }
-            bowlersScore.push(bowlerJson)
+            bowlersScore[name] = bowlerJson
         }
     }
     return { batsmen: batsmenScore, bowlers: bowlersScore }
