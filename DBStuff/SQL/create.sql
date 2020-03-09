@@ -4,24 +4,16 @@ create table user (
   email varchar(100) unique
 );
 create table leagueMatch (
-  matchId varchar(50) primary key,
+  matchId integer primary key,
   matchUrl varchar(200) unique,
   matchName varchar(50) not null,
   updated datetime,
   active boolean not null
 );
 create table matchPlayer (
-  playerId varchar(50) not null,
-  matchId varchar(50) not null,
+  playerId integer primary key,
+  matchId integer not null,
   playerName varchar(100) not null,
-  primary key (playerId, matchId)
-);
-create table userTeam (
-  username varchar(50) not null,
-  matchId varchar(50) not null,
-  captain boolean not null,
-  playerId varchar(50) not null,
-  primary key (username, matchId, playerId)
 );
 CREATE TABLE scoringRule (
   wicket INTEGER NOT NULL,
@@ -35,27 +27,16 @@ create table score (
   totalScore integer
 );
 
-
-
-
--- sgsg
-
-desc userTeam;
-drop table userTeam;
-
 create table userTeam
 (
 	username varchar(50),
-    matchId varchar(50),
-    teamId integer primary key auto_increment
+  matchId integer,
+  teamId integer primary key
 );
 
 create table team
 (
 	teamId integer,
-    playerId varchar(50),
-    captain boolean
+  playerId integer,
+  captain boolean
 );
-alter table team
-add constraint FK_team_teamId
-foreign key (teamId) references userTeam(teamId);

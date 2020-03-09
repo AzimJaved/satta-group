@@ -12,9 +12,8 @@ const fantasy = express()
 
 // database.insertQuery([['name', 'username', 'email']] ,[['azim', 'azim', 'azim']], 'user')
 
-scraper.worker('https://www.espncricinfo.com/series/19322/scorecard/1187681/new-zealand-vs-india-5th-t20i-india-in-new-zealand-2019-20')
-
-
+scraper.cricbuzzWorker('22663')
 fantasy.listen(PORT, ()=>{
     console.log(`Fantasy league server listening on PORT: ${PORT}`)
 })
+
