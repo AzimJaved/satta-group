@@ -43,3 +43,40 @@
         width: 95%;
     }   
 }
+
+.table{
+    width: 100%;
+    text-align: center;
+    
+    padding: 2rem;
+}
+
+
+.tablerow {
+    /* border: solid #5580a4; */
+    padding: 1em 0;
+}
+
+.sattaform{
+    width: 80%;
+    margin: 0 auto;
+    background-color: #68d391;
+    padding: 2em;
+    padding-top: 1em;
+    color: black;
+    box-shadow: 12px 12px;
+    color:#070a39;
+
+}
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+
+h2{
+    text-decoration: underline;
+}
+
+.btn-satta{
+    font-size: 1em;
+    align-self: center;
+    margin: 2em 0 0 0;
+}

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import "../App.css";
+import Table from './PointsTable'
+import SattaForm from './Sattaform';
 
 const serverEndpoint = "http://localhost:8000"
 export default function Login() {
     let [user, setUser] = useState({ authenticated: false, token: null })
 
+    let isSattaOn = true;
+    let sattaLagaDiya = false;
     let [email, setEmail] = useState('')
     let [password, setPassword] = useState('')
 
@@ -54,12 +58,18 @@ export default function Login() {
 
     return (
         <article className="room">
-            {user.authenticated ?
+            {user.authenticated || true ?
                 (
                     <div className="searchContainer">
-                        <p>
-                        Authed
-                        </p>
+                        <h1>
+                            Welcome to the Satta Site.
+                        </h1>
+                        {
+                            (isSattaOn && !sattaLagaDiya) || 1 ? (<SattaForm />)
+                                : (<div>Satta is off </div>)
+                        }
+                        <Table />
+
                     </div>
                 ) : (<div className="searchContainer">
                     <div className="flexchild">
@@ -90,7 +100,11 @@ export default function Login() {
                 </div>
                 )
             }
-
+            <h4 align="center">
+                <strike>
+                    RCB HI JEETEGI
+                </strike>
+            </h4>
         </article >
     )
 }
