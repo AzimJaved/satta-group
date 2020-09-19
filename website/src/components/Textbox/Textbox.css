@@ -1,0 +1,81 @@
+.textbox-container {
+  padding: 0.5em 0;
+  width: 100%;
+  margin: 1em 0;
+  max-width: 24em;
+  min-width: 18em;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.textbox {
+  font-family: 'Montserrat', sans-serif;
+
+  padding: 1em;
+  width: 100%;  
+  border: 2px solid #1c1c1c40;
+  transition: all 0.5s ease;
+}
+.textbox::placeholder {
+  opacity: 0.65;
+}
+.textbox:focus, .textbox:active {
+  outline: none;
+  transition: all 0.5s ease;
+  border: 2px solid #007fb9;
+}
+.textbox:required::placeholder::after {
+  content: '*';
+  display: inline-block;
+  color: #ff0000;
+}
+
+.validation {
+  position: absolute;
+  height: 1em;
+  width: 1em;
+  right: 1em;
+  top: 1em;
+  
+  margin: auto;
+  overflow: hidden;
+  color: #fff;
+}
+
+.validation .true {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #15ff00;
+}
+.validation .false {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #ff0000;  
+}
+
+.val-error-text {
+  position: absolute;
+  text-align: left;
+  top: 85%;
+  font-size: 0.6725em;
+  margin: 0.5em 0;
+  color: #ff0000;
+}
+
+/* Textbox Styles ============================ */
+.textbox[class~="dark"] {
+  color: #fff;
+  background: #1c1c1c;
+  opacity: 0.75;
+}

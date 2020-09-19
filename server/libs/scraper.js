@@ -114,7 +114,7 @@ async function parseHtml_cricbuzz(HTML){
         else if (index > 11 && index < 27)
             players.team2.push(player.children[0].data)
     })
-    console.log(players)
+    // console.log(players)
 }
 
 /**
