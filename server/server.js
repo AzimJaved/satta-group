@@ -1,7 +1,6 @@
 
 require('dotenv').config()
 const express = require('express')
-const database = require('./libs/database')
 const scraper = require('./libs/scraper')
 const bodyParser = require('body-parser')
 const crypto = require('crypto-js')
@@ -19,14 +18,20 @@ app.use(cors())
 app.options('*', cors())
 
 const { firebaseAuth } = require('./libs/firebase')
+const mongoose = require('mongoose');
 
+const userSchema = new mongoose.Schema({
+    username: String, 
+    players: [],
+    currScore : Number,
+    cumScore : Number
+});
 
-// database.insertQuery([['name', 'username', 'email']] ,[['azim', 'azim', 'azim']], 'user')
+const User = mongoose.model('User', userSchema);
 
 
 app.post('/login', (req, res) => {
     let time = Date()
-    // console.log(req.body);
     console.log(req.body.email + " " + req.body.password)
     firebaseAuth.signInWithEmailAndPassword(req.body.email, req.body.password)
         .then(() => {
@@ -59,6 +64,35 @@ app.post('/login', (req, res) => {
         })
 })
 
+
+
+app.post('/submitSatta', async (req, res)=>{
+    let token = req.body.token;
+    let isValid = await Auth.findOne({token: token}).exec();
+    if(isValid){
+        console.log("User is authed");
+        let selectedPlayers = req.body.players;
+        console.log(selectedPlayers);
+        let username = req.body.username;
+        let q = await User.updateOne({username: username}, {players: selectedPlayers});
+        if(q.n){
+            return res.sendStatus(201);
+        }
+        return res.sendStatus(500);
+    }
+    else{
+        console.log("User is not authenticated");
+        console.log(401);
+        return res.sendStatus(401);
+    }
+});
+
+
+app.get('/scores', async(req, res)=>{
+    console.log("Scores");
+    let u = await User.find({}, ['username', 'currScore', 'cumScore']);   
+    res.send(JSON.stringify(u));
+});
 
 
 

@@ -65,7 +65,71 @@ function parseHtml_cricinfo(matchHtml) {
 }
 
 
-async function parseHtml_cricbuzz(HTML){
+
+function parseHtml_cricinfoN(html) {
+    const $ = cheerio.load(html);
+    var batsmenScore = [];
+    var bowlersScore = [];
+
+    // Batsmen:
+
+    for (var t = 0; t < 2; t++) {
+        var bmt = $('.batsman');
+        bmt = bmt[t];
+        bmt = bmt.children[1];
+
+        for (var i = 0; i < bmt.children.length - 1; i++) {
+            if (i % 2 == 0) {
+                // console.log(bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data, bmt.childNodes[i].childNodes[2].childNodes[0].data);
+                var curr = {
+                    'name': bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data,
+                    'runs': bmt.childNodes[i].childNodes[2].childNodes[0].data
+                };
+                batsmenScore.push(curr);
+            }
+        }
+    }
+
+    // Bowlers: 
+    for (var t = 0; t < 2; t++) {
+        var bwt = $('.bowler');
+
+        bwt = bwt[t];
+        bwt = bwt.children[1];
+
+
+        for (var i = 0; i < bwt.children.length - 1; i++) {
+            // console.log(bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data, bwt.childNodes[i].childNodes[1].childNodes[0].data);
+            var curr = {
+                'name': bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data,
+                'wickets':bwt.childNodes[i].childNodes[1].childNodes[0].data
+            };
+            bowlersScore.push(curr);
+        }
+    }
+
+    console.log(batsmenScore);
+    console.log(bowlersScore);
+
+
+    return { 'batsmen': batsmenScore, 'bowlers': bowlersScore }
+}
+
+async function test() {
+    console.log("Hello World");
+    fetchHtml('https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21')
+        .then((html) => {
+            parseHtml_cricinfoN(html);
+        })
+        .catch((err) => console.log(err));
+
+}
+
+// test();
+
+
+
+async function parseHtml_cricbuzz(HTML) {
     const $ = cheerio.load(HTML)
     let batsmen = []
     let bowlers = []
@@ -73,43 +137,43 @@ async function parseHtml_cricbuzz(HTML){
     let bowlersJson = {}
     // batsmanName = 
     // console.log(batsmen[0].children[1].children[1].children[0].data)
-    $("#innings_1").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(1)").find("[class~='cb-scrd-itms']").each((index, batsman) =>{
-        if(batsman.children[1].children[1]){
+    $("#innings_1").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(1)").find("[class~='cb-scrd-itms']").each((index, batsman) => {
+        if (batsman.children[1].children[1]) {
             batsmen.push(batsman)
         }
     })
-    $("#innings_1").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(4)").find("[class~='cb-scrd-itms']").each((index, bowler) =>{
-        if(bowler.children[1].children[1]){
+    $("#innings_1").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(4)").find("[class~='cb-scrd-itms']").each((index, bowler) => {
+        if (bowler.children[1].children[1]) {
             bowlers.push(bowler)
         }
     })
-    $("#innings_2").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(1)").find("[class~='cb-scrd-itms']").each((index, batsman) =>{
-        if(batsman.children[1].children[1]){
+    $("#innings_2").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(1)").find("[class~='cb-scrd-itms']").each((index, batsman) => {
+        if (batsman.children[1].children[1]) {
             batsmen.push(batsman)
         }
     })
-    $("#innings_2").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(4)").find("[class~='cb-scrd-itms']").each((index, bowler) =>{
-        if(bowler.children[1].children[1]){
+    $("#innings_2").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(4)").find("[class~='cb-scrd-itms']").each((index, bowler) => {
+        if (bowler.children[1].children[1]) {
             bowlers.push(bowler)
         }
     })
-    for(let i=0; i < batsmen.length; i++){
+    for (let i = 0; i < batsmen.length; i++) {
         let name = batsmen[i].children[1].children[1].children[0].data.substr(1)
         let batsmanJson = { name: name, runs: batsmen[i].children[5].children[0].data }
         batsmenJson[name] = batsmanJson
     }
-    for(let i=0; i < bowlers.length; i++){
+    for (let i = 0; i < bowlers.length; i++) {
         let name = bowlers[i].children[1].children[1].children[0].data.substr(1)
         let bowlerJson = { name: name, wickets: bowlers[i].children[9].children[0].data }
         bowlersJson[name] = bowlerJson
     }
 
-    let scoreboard = {batsmen: batsmenJson, bowlers: bowlersJson}
+    let scoreboard = { batsmen: batsmenJson, bowlers: bowlersJson }
     // Squads
-    let players = {team1: [], team2: []}
+    let players = { team1: [], team2: [] }
     //BUG: nth-of-type selector doesn't work for some reason, and there is currently no way to differentiate benched and other players.
     $("[class~='cb-minfo-tm-nm']").find("[class='margin0 text-black text-hvr-underline']").each((index, player) => {
-        if(index < 11)
+        if (index < 11)
             players.team1.push(player.children[0].data)
         else if (index > 11 && index < 27)
             players.team2.push(player.children[0].data)
@@ -148,7 +212,7 @@ exports.cricbuzzWorker = async (matchId) => {
      * @function cricbuzzWorker driver function to scrape scores and teams from cricbuzz
      * @param matchId cricbuzz matchId from URL
     */
-   let url = `https://www.cricbuzz.com/api/html/cricket-scorecard/${matchId}`
-   let HTML = await fetchHtml(url)
-   parseHtml_cricbuzz(HTML)
+    let url = `https://www.cricbuzz.com/api/html/cricket-scorecard/${matchId}`
+    let HTML = await fetchHtml(url)
+    parseHtml_cricbuzz(HTML)
 }
