@@ -1,7 +1,8 @@
 
 import React from 'react';
-import Checkbox from './Checkbox/Checkbox';
+import Checkbox from './Checkbox/Checkbox.tsx';
 import './Checkbox/Checkbox.css';
+
 
 class SattaForm extends React.Component {
     state = {
@@ -12,27 +13,32 @@ class SattaForm extends React.Component {
         return (<div className="sattaform">
             <form>
                 <h2>Batsmen</h2>
-                <Checkbox options={this.state.batsmen} onChange={choose}/>
+                <Checkbox options={this.state.batsmen} onChange={this.choose} />
                 
                 <h2>Bowler</h2>
 
-                <Checkbox options={this.state.bowlers} onChange={choose} />
+                <Checkbox options={this.state.bowlers} onChange={this.choose} />
 
                 <h2> Wicket Keepers</h2>
 
-                <Checkbox options={this.state.wk} onChange={choose} />
+                <Checkbox options={this.state.wk} onChange={this.choose} />
 
-                <button className="btn btn-satta">Submit Satta</button>
+                <button className="btn btn-satta" disabled={! (this.state.selected === 11)} onClick={(event)=>{event.preventDefault(); this.submitsatta(event)}}>Submit Satta</button>
             </form>
         </div>);
     }
 
+    submitsatta = (e)=>{
+        console.log("submitting satta");
+    }
+
+    choose = (e)=>{
+        this.setState({selected: this.state.selected + 1});
+        console.log(this.state.selected)
+    };
+
 }
 
-function choose(e){
-
-    
-}
 //TODO: Fetch players from the server.
 
 
