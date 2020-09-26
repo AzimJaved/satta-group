@@ -6,6 +6,8 @@ const bodyParser = require('body-parser')
 const crypto = require('crypto-js')
 const cors = require('cors')
 
+const points = require('./libs/points')
+
 const connection = require('./libs/mongo')
 const { Auth } = require('./libs/auth')
 
@@ -21,10 +23,10 @@ const { firebaseAuth } = require('./libs/firebase')
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: String, 
+    username: String,
     players: [],
-    currScore : Number,
-    cumScore : Number
+    currScore: Number,
+    cumScore: Number
 });
 
 const User = mongoose.model('User', userSchema);
@@ -66,21 +68,21 @@ app.post('/login', (req, res) => {
 
 
 
-app.post('/submitSatta', async (req, res)=>{
+app.post('/submitSatta', async (req, res) => {
     let token = req.body.token;
-    let isValid = await Auth.findOne({token: token}).exec();
-    if(isValid){
+    let isValid = await Auth.findOne({ token: token }).exec();
+    if (isValid) {
         console.log("User is authed");
         let selectedPlayers = req.body.players;
         console.log(selectedPlayers);
         let username = req.body.username;
-        let q = await User.updateOne({username: username}, {players: selectedPlayers});
-        if(q.n){
+        let q = await User.updateOne({ username: username }, { players: selectedPlayers });
+        if (q.n) {
             return res.sendStatus(201);
         }
         return res.sendStatus(500);
     }
-    else{
+    else {
         console.log("User is not authenticated");
         console.log(401);
         return res.sendStatus(401);
@@ -88,16 +90,57 @@ app.post('/submitSatta', async (req, res)=>{
 });
 
 
-app.get('/scores', async(req, res)=>{
+app.get('/scores', async (req, res) => {
     console.log("Scores");
-    let u = await User.find({}, ['username', 'currScore', 'cumScore']);   
+    let u = await User.find({}, ['username', 'currScore', 'cumScore']);
     res.send(JSON.stringify(u));
 });
 
 
 
+async function calculatePoints() {
+    let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
+    var scoring = {
+        "wicket": 20,
+        "run": 1,
+        "catch": 10,
+        "stump": 10,
+        "captainMultiplier": 1.5
+    };
+    let userTeams = {};
+    userTeams.matchUrl = url;
+
+    userTeams.users = [];
+
+
+    let users = await User.find({});
+    users.forEach((satteri) => {
+        var obj = {};
+        obj.username = satteri.username;
+        var team = [];
+        for (let r = 0; r < satteri.players.length; r++) {
+            team.push({ "name": satteri.players[r], "captain": false });
+        }
+        obj.totalScore = satteri.currScore;
+        obj.team = team;
+        userTeams.users.push(obj);
+
+    });
+
+    console.log(userTeams);
+
+    let pointsTable = await points.calculate(userTeams, scoring);
+    console.log(pointsTable)
+
+
+
+}
+
+calculatePoints();
+
+
 scraper.cricbuzzWorker('22663')
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
     console.log(`app league server listening on PORT: ${PORT}`)
 })
 

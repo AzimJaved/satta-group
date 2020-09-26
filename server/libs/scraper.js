@@ -9,7 +9,7 @@ const request = require('request')
  * @function parseHtml_cricinfo Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
  * @param matchHtml The HTML code
 */
-function parseHtml_cricinfo(matchHtml) {
+function parseHtml_cricinfoOld(matchHtml) {
     const $ = cheerio.load(matchHtml)
     var batsmenScore = {}
     var bowlersScore = {}
@@ -66,7 +66,7 @@ function parseHtml_cricinfo(matchHtml) {
 
 
 
-function parseHtml_cricinfoN(html) {
+function parseHtml_cricinfo(html) {
     const $ = cheerio.load(html);
     var batsmenScore = [];
     var bowlersScore = [];
@@ -108,8 +108,8 @@ function parseHtml_cricinfoN(html) {
         }
     }
 
-    console.log(batsmenScore);
-    console.log(bowlersScore);
+    // console.log(batsmenScore);
+    // console.log(bowlersScore);
 
 
     return { 'batsmen': batsmenScore, 'bowlers': bowlersScore }
@@ -119,7 +119,7 @@ async function test() {
     console.log("Hello World");
     fetchHtml('https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21')
         .then((html) => {
-            parseHtml_cricinfoN(html);
+            parseHtml_cricinfo(html);
         })
         .catch((err) => console.log(err));
 
@@ -202,8 +202,8 @@ async function fetchHtml(matchUrl) {
 */
 exports.cricinfoWorker = async (matchUrl) => {
     let HTML = await fetchHtml(matchUrl)
-    let scoreboard = parseHtml(HTML)
-    console.log(scoreboard)
+    let scoreboard = await parseHtml_cricinfo(HTML)
+    // console.log(scoreboard)
     return scoreboard
 }
 
