@@ -112,7 +112,6 @@ async function calculatePoints() {
 
     userTeams.users = [];
 
-
     let users = await User.find({});
     users.forEach((satteri) => {
         var obj = {};
@@ -127,13 +126,17 @@ async function calculatePoints() {
 
     });
 
-    console.log(userTeams);
+    // console.log(userTeams);
 
     let pointsTable = await points.calculate(userTeams, scoring);
     console.log(pointsTable)
 
+    // console.log (Object.keys(pointsTable));
 
-
+    Object.keys(pointsTable).forEach( async(satteri)=>{
+        let res = await User.updateOne({username : satteri}, {currScore: pointsTable[satteri].currScore});
+        // console.log(res.n);
+    });
 }
 
 calculatePoints();
