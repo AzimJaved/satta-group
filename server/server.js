@@ -31,12 +31,14 @@ const { firebaseAuth } = require('./libs/firebase')
 const mongoose = require('mongoose');
 
 const Player = mongoose.model('Player', mongoose.Schema({ name: String, type: String }));
+const SattaStatus = mongoose.model("SattaStatus", mongoose.Schema({ status: Boolean, url : String}));
 
 const userSchema = new mongoose.Schema({
     username: String,
     players: [],
     currScore: Number,
-    cumScore: Number
+    cumScore: Number, 
+    sattaLagaDiya: Boolean
 });
 const User = mongoose.model('User', userSchema);
 
@@ -140,16 +142,43 @@ app.post('/players', async (req, res) => {
 app.post('/satta', async (req, res) => {
     if (req.body.key == process.env.ADMIN_KEY) {
         let status = req.body.status;
-        if (status == 'ON') {
-            // Reset sattaLagaDiya for all users, set satta as on 
+        if (status == 'ON' || status == 1 || status == 'on') {
+            // Reset sattaLagaDiya for all users, set satta as on
+            let ress = await User.updateMany({}, {sattaLagaDiya: false});
+            console.log(ress.n);
+            ress = await SattaStatus.deleteMany({});
+            let sstatus = 1;
+            let matchUrl = req.body.matchUrl;
+            let newStatus = new SattaStatus({status: sstatus, url: matchUrl});
+            newStatus.save();
+            return res.sendStatus(201);
+        }
+        else if(status == "OFF" || status == 'off' || status == 0){
+            let res = await SattaStatus.updateMany({}, {status: false});
+            return res.sendStatus(201);
         }
     }
     else
         res.sendStatus(401);
-})
+});
+
+app.get('/satta', async(req, res)=>{
+    let ss = await SattaStatus.find({});
+    // console.log(ss);
+    ss = ss[0];
+    if(ss.status){
+        return res.send(ss.status);
+    }
+    res.send("OFF");
+});
 
 async function calculatePoints() {
-    let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
+    // let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
+    let url = await SattaStatus.find({});
+    url = url[0];
+    url = url.url;
+    if(!url) return;
+    // console.log(url);
     var scoring = {
         "wicket": 20,
         "run": 1,
@@ -174,8 +203,8 @@ async function calculatePoints() {
     });
     let pointsTable = await points.calculate(userTeams, scoring);
     Object.keys(pointsTable).forEach(async (satteri) => {
-        if (users[satteri].currScore != pointsTable[satteri].currentScore)
-            let res = await User.updateOne({ username: satteri }, { currScore: pointsTable[satteri].currentScore });
+        // if (users[satteri].currScore != pointsTable[satteri].currentScore)
+        let res = await User.updateOne({ username: satteri }, { currScore: pointsTable[satteri].currentScore });
     });
 }
 calculatePoints();
