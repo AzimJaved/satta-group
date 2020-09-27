@@ -9,7 +9,6 @@ const serverEndpoint = require('../config.json').APIConfig.baseURL
 
 export default function Login() {
     let [user, setUser] = useState({ authenticated: false, token: null })
-
     let [sattaOn, setSattaOn] = useState(false);
     let [sattaLagaDiya, kyaSattaLagadiya] = useState(false);
     let [email, setEmail] = useState('')
@@ -47,7 +46,7 @@ export default function Login() {
                 if (data.authenticated) {
                     setUser({ authenticated: true, token: data.token, username: data.username })
                     cookies.set('token', data.token);
-                    cookies.set('username', data.username)
+                    cookies.set('username', email)
                     setSattaOn(data.sattaOn)
                     kyaSattaLagadiya(data.sattaLagaDiya)
                     setEmail("")
@@ -62,14 +61,14 @@ export default function Login() {
 
     return (
         <article className="room">
-            {user.authenticated || true ?
+            {user.authenticated ?
                 (
                     <div className="searchContainer">
                         <h1>
                             Welcome to the Satta Site.
                         </h1>
                         {
-                            (sattaOn && !sattaLagaDiya) || 1 ? (<SattaForm />)
+                            (sattaOn && !sattaLagaDiya) ? (<SattaForm />)
                                 : (<div>Ho chuki sattebaazi </div>)
                         }
                         <Table />
@@ -81,14 +80,14 @@ export default function Login() {
                         <p style={{ color: "grey" }}> Please enter the following details: </p>
                     </div>
                     <form className="flexchild">
-                        <label for="Email">Username</label>
+                        <label htmlFor="Email">Username</label>
                         <br />
                         <input type="text" className="textbox" id="email" onChange={(event) => {
                             event.preventDefault();
                             handleChange(event);
                         }} />
                         <br />
-                        <label for="url">Password</label>
+                        <label htmlFor="url">Password</label>
                         <br />
                         <input type="password" className="textbox" id="password" onChange={(event) => {
                             event.preventDefault();

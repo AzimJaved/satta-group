@@ -20,9 +20,10 @@ class SattaForm extends React.Component {
 
     componentDidMount() {
         fetch(
-            this.serverEndpoint + '/fetchPlayers'
-        ).then(respose => respose.json())
+            this.serverEndpoint + '/players'
+        ).then(response => response.json())
             .then(data => {
+
                 if (data != null) {
                     let batsmen = [], bowlers = [], wk = []
                     data.forEach(player => {
