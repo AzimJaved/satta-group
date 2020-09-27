@@ -30,7 +30,7 @@ app.options('*', cors())
 const { firebaseAuth } = require('./libs/firebase')
 const mongoose = require('mongoose');
 
-const Player = mongoose.model('Player', mongoose.Schema({ name: String }));
+const Player = mongoose.model('Player', mongoose.Schema({ name: String, type: String }));
 
 const userSchema = new mongoose.Schema({
     username: String,
@@ -119,16 +119,16 @@ app.get('/scores', async (req, res) => {
 });
 
 app.get('/players', async (req, res) => {
-    let players = await Player.find({}, ['name']);
+    let players = await Player.find({}, ['name', 'type']);
     res.json(players);
 });
 
 app.post('/players', async (req, res) => {
     if (req.body.key == process.env.ADMIN_KEY) {
-        let res  = await Player.deleteMany({});
+        let res = await Player.deleteMany({});
         let players = req.body.players;
         players.forEach((player) => {
-            let p = new Player({ name: player });
+            let p = new Player({ name: player.name, type: player.type });
             p.save();
         });
         res.sendStatus(201);
@@ -137,10 +137,10 @@ app.post('/players', async (req, res) => {
         res.sendStatus(401);
 });
 
-app.post('/satta', async(req, res)=>{
+app.post('/satta', async (req, res) => {
     if (req.body.key == process.env.ADMIN_KEY) {
         let status = req.body.status;
-        if(status ==  'ON'){
+        if (status == 'ON') {
             // Reset sattaLagaDiya for all users, set satta as on 
         }
     }
@@ -174,6 +174,8 @@ async function calculatePoints() {
     });
     let pointsTable = await points.calculate(userTeams, scoring);
     Object.keys(pointsTable).forEach(async (satteri) => {
+        if (users[satteri].currScore != pointsTable[satteri].currentScore)
+            let res = await User.updateOne({ username: satteri }, { currScore: pointsTable[satteri].currentScore });
     });
 }
 calculatePoints();
