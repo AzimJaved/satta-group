@@ -82,7 +82,8 @@ app.post('/createUser', async (req, res) => {
             username: req.body.username,
             players: [],
             currScore: 0,
-            cumScore: 0
+            cumScore: 0, 
+            sattaLagaDiya: false
         });
         newUser.save((err, resu) => {
             if (err) return res.sendStatus(500);
@@ -127,7 +128,7 @@ app.get('/players', async (req, res) => {
 
 app.post('/players', async (req, res) => {
     if (req.body.key == process.env.ADMIN_KEY) {
-        let res = await Player.deleteMany({});
+        let ress = await Player.deleteMany({});
         let players = req.body.players;
         players.forEach((player) => {
             let p = new Player({ name: player.name, type: player.type });
