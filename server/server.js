@@ -30,15 +30,15 @@ app.options('*', cors())
 const { firebaseAuth } = require('./libs/firebase')
 const mongoose = require('mongoose');
 
+const Player = mongoose.model('Player', mongoose.Schema({ name: String }));
+
 const userSchema = new mongoose.Schema({
     username: String,
     players: [],
     currScore: Number,
     cumScore: Number
 });
-
 const User = mongoose.model('User', userSchema);
-
 
 app.post('/login', (req, res) => {
     let time = Date()
@@ -117,6 +117,36 @@ app.get('/scores', async (req, res) => {
     let u = await User.find({}, ['username', 'currScore', 'cumScore']);
     res.json(u);
 });
+
+app.get('/players', async (req, res) => {
+    let players = await Player.find({}, ['name']);
+    res.json(players);
+});
+
+app.post('/players', async (req, res) => {
+    if (req.body.key == process.env.ADMIN_KEY) {
+        let res  = await Player.deleteMany({});
+        let players = req.body.players;
+        players.forEach((player) => {
+            let p = new Player({ name: player });
+            p.save();
+        });
+        res.sendStatus(201);
+    }
+    else
+        res.sendStatus(401);
+});
+
+app.post('/satta', async(req, res)=>{
+    if (req.body.key == process.env.ADMIN_KEY) {
+        let status = req.body.status;
+        if(status ==  'ON'){
+            // Reset sattaLagaDiya for all users, set satta as on 
+        }
+    }
+    else
+        res.sendStatus(401);
+})
 
 async function calculatePoints() {
     let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
