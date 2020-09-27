@@ -50,7 +50,7 @@ app.post('/login', (req, res) => {
             let token = crypto.MD5('/AzIm/' + req.body.email + '*' + req.body.password + '*' + time.toString() + '/AyEsha/').toString()
             let authToken = new Auth({ token: token, date: time, valid: true })
             authToken.save()
-                .then(savedToken => {
+                .then( async savedToken => {
                     console.log("New login detected")
                     Auth.find({}, (err, result) => {
                         if (err) {
@@ -59,7 +59,19 @@ app.post('/login', (req, res) => {
                             return
                         }
                     })
-                    res.json({ authenticated: true, token: token })
+                    let ss = await SattaStatus.find({});
+                    // console.log(ss);
+                    ss = ss[0];
+                    let sattaOn  = false;
+                    if(ss.status){
+                        sattaOn = ss.status;
+                    }
+                    let sattaLagaDiya = false;
+                    let user = await User.findOne({username: req.body.username});
+                    if(user){
+                        sattaLagaDiya = user.sattaLagaDiya;
+                    }
+                    res.json({ authenticated: true, token: token, sattaOn: sattaOn, sattaLagaDiya: sattaLagaDiya });
                     return
                 })
                 .catch((err) => {
@@ -155,7 +167,7 @@ app.post('/satta', async (req, res) => {
             return res.sendStatus(201);
         }
         else if(status == "OFF" || status == 'off' || status == 0){
-            let res = await SattaStatus.updateMany({}, {status: false});
+            let ress = await SattaStatus.updateMany({}, {status: false});
             return res.sendStatus(201);
         }
     }
