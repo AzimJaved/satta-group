@@ -47,7 +47,7 @@ app.post('/login', (req, res) => {
     console.log(req.body.email + " " + req.body.password)
     firebaseAuth.signInWithEmailAndPassword(req.body.email, req.body.password)
         .then(() => {
-            let token = crypto.MD5('/AzIm/' + req.body.email + '*' + req.body.password + '*' + time.toString() + '/AyEsha/').toString()
+            let token = crypto.MD5('/AzIm/' + req.body.email + '*/' + process.env.TOKEN_SALT + '/').toString()
             let authToken = new Auth({ token: token, date: time, valid: true })
             authToken.save()
                 .then( async savedToken => {
@@ -61,7 +61,8 @@ app.post('/login', (req, res) => {
                     })
                     let ss = await SattaStatus.find({});
                     // console.log(ss);
-                    ss = ss[0];
+                    if(ss)
+                        ss = ss[0];
                     let sattaOn  = false;
                     if(ss.status){
                         sattaOn = ss.status;
@@ -108,7 +109,8 @@ app.post('/createUser', async (req, res) => {
 
 app.post('/submitSatta', async (req, res) => {
     let token = req.body.token;
-    let isValid = await Auth.findOne({ token: token }).exec();
+    // let isValid = await Auth.findOne({ token: token }).exec();
+    let isValid = await checkauth(req.body.username, token);
     if (isValid) {
         console.log("User is authed");
         let selectedPlayers = req.body.players;
@@ -188,9 +190,9 @@ app.get('/satta', async(req, res)=>{
 async function calculatePoints() {
     // let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
     let url = await SattaStatus.find({});
+    if(!url) return;
     url = url[0];
     url = url.url;
-    if(!url) return;
     // console.log(url);
     var scoring = {
         "wicket": 20,
@@ -221,6 +223,22 @@ async function calculatePoints() {
     });
 }
 calculatePoints();
+
+
+var checkauth = async (username, token) =>{
+    let calcToken = crypto.MD5('/AzIm/' + username + '*/' + process.env.TOKEN_SALT + '/').toString();
+    var result = false;
+    if(calcToken != token) return false;
+    
+    
+    let isValid = await Auth.findOne({ token: token }).exec();
+
+    if(isValid){
+        result = true;
+    }
+
+    return result;
+}
 
 app.listen(PORT, () => {
     console.log(`app league server listening on PORT: ${PORT}`)

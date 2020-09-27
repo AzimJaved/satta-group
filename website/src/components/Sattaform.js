@@ -24,7 +24,17 @@ class SattaForm extends React.Component {
         ).then(respose => respose.json())
             .then(data => {
                 if (data != null) {
-                    this.setState({ batsmen: data.batsmen, bowlers: data.bowlers, wk: data.wk, loading: false })
+                    let batsmen = [], bowlers = [], wk = []
+                    data.forEach(player => {
+                        if (player.type === 'bat') {
+                            batsmen.push(player.name);
+                        } else if (player.type === 'bowl') {
+                            bowlers.push(player.name)
+                        } else if (player.type === 'wk'){
+                            wk.push(player.name)
+                        }
+                    })
+                    this.setState({ batsmen: batsmen, bowlers: bowlers, wk: wk, loading: false })
                 }
             })
     }

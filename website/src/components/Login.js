@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../App.css";
 import Table from './PointsTable'
 import SattaForm from './Sattaform';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const serverEndpoint = require('../config.json').APIConfig.baseURL
 
@@ -12,6 +14,14 @@ export default function Login() {
     let [sattaLagaDiya, kyaSattaLagadiya] = useState(false);
     let [email, setEmail] = useState('')
     let [password, setPassword] = useState('')
+
+    useEffect(() => {
+        let tokenCookie = cookies.get('token')
+        let userCookie = cookies.get('username')
+        if (tokenCookie && userCookie) {
+            setUser({ authenticated: true, token: tokenCookie, username: userCookie })
+        }
+    }, [])
 
     function handleChange(event) {
         switch (event.target.id) {
@@ -35,13 +45,17 @@ export default function Login() {
             .then(response => response.json())
             .then(data => {
                 if (data.authenticated) {
-                    setUser({ authenticated: true, token: data.token })
+                    setUser({ authenticated: true, token: data.token, username: data.username })
+                    cookies.set('token', data.token);
+                    cookies.set('username', data.username)
                     setSattaOn(data.sattaOn)
                     kyaSattaLagadiya(data.sattaLagaDiya)
                     setEmail("")
                     setPassword("")
                 } else {
-                    setUser({ authenticated: false, token: null })
+                    setUser({ authenticated: false, token: null, user: null })
+                    setSattaOn(false)
+                    kyaSattaLagadiya(false)
                 }
             })
     }
