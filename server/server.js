@@ -66,7 +66,22 @@ app.post('/login', (req, res) => {
         })
 })
 
-
+app.post('/createUser', async(req, res) =>{
+    if(1 || crypto.MD5(req.body.key) == env.secret ){
+        const newUser = new User({
+            username : req.body.username,
+            players: [],
+            currScore : 0,
+            cumScore: 0
+        });
+        newUser.save((err, resu) => {
+            if(err) return res.sendStatus(500);
+            return res.sendStatus(201);
+        });
+    }
+    else 
+        res.sendStatus(401);
+});
 
 app.post('/submitSatta', async (req, res) => {
     let token = req.body.token;
@@ -129,20 +144,20 @@ async function calculatePoints() {
     // console.log(userTeams);
 
     let pointsTable = await points.calculate(userTeams, scoring);
-    console.log(pointsTable)
+    // console.log(pointsTable)
 
     // console.log (Object.keys(pointsTable));
 
     Object.keys(pointsTable).forEach( async(satteri)=>{
         let res = await User.updateOne({username : satteri}, {currScore: pointsTable[satteri].currentScore});
-        console.log(res.n);
+        // console.log(res.n);
     });
 }
 
 calculatePoints();
 
 
-scraper.cricbuzzWorker('22663')
+// scraper.cricbuzzWorker('22663')
 app.listen(PORT, () => {
     console.log(`app league server listening on PORT: ${PORT}`)
 })

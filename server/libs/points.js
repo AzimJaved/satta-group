@@ -48,7 +48,7 @@ exports.calculate = async (userTeams, scoring) => {
             }
         })
         pointsTable[user.username].totalScore += pointsTable[user.username].currentScore
-        console.log(pointsTable[user.username]);
+        // console.log(pointsTable[user.username]);
     })
     pointsTable
     return pointsTable
