@@ -31,19 +31,16 @@ exports.calculate = async (userTeams, scoring) => {
         pointsTable[user.username].currentScore = 0
         pointsTable[user.username].totalScore = user.totalScore
         user.team.forEach(playerName => {
-            // console.log(playerName)
-            // console.log(scoreboard.batsmen.filter(elem => elem.name == playerName));
-            // // console.log(scoreboard.batsmen.filter((elem)=>{
-            //     return elem.name == playerName;
-            // }));
+        
+            // console.log(scoreboard.batsmen[playerName.name]);
             if(playerName.captain){
                 multiplier = scoring.captainMultiplier
             } else {
                 multiplier = 1
             }
             if(scoreboard.batsmen[playerName.name] != null){
-                console.log("here")
-                console.log(scoreboard.batsmen[playerName.name].runs)
+                // console.log("here")
+                // console.log(scoreboard.batsmen[playerName.name])
                 pointsTable[user.username].currentScore += multiplier*scoring.run*scoreboard.batsmen[playerName.name].runs
             }
             if(scoreboard.bowlers[playerName] != null){

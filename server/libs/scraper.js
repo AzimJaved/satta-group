@@ -68,8 +68,8 @@ function parseHtml_cricinfoOld(matchHtml) {
 
 function parseHtml_cricinfo(html) {
     const $ = cheerio.load(html);
-    var batsmenScore = [];
-    var bowlersScore = [];
+    var batsmenScore = {};
+    var bowlersScore = {};
 
     // Batsmen:
 
@@ -80,12 +80,20 @@ function parseHtml_cricinfo(html) {
 
         for (var i = 0; i < bmt.children.length - 1; i++) {
             if (i % 2 == 0) {
-                // console.log(bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data, bmt.childNodes[i].childNodes[2].childNodes[0].data);
+                var obj = {};
                 var curr = {
                     'name': bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data,
                     'runs': bmt.childNodes[i].childNodes[2].childNodes[0].data
                 };
-                batsmenScore.push(curr);
+
+                obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = {};
+                // obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name  = curr.name;
+                // obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].runs  = curr.runs;
+                
+                // obj.bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data = curr;
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data]  = {} ;
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name  = curr.name ;
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].runs  = curr.runs ;
             }
         }
     }
@@ -100,11 +108,17 @@ function parseHtml_cricinfo(html) {
 
         for (var i = 0; i < bwt.children.length - 1; i++) {
             // console.log(bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data, bwt.childNodes[i].childNodes[1].childNodes[0].data);
+            var obj = {};
+            
             var curr = {
                 'name': bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data,
                 'wickets':bwt.childNodes[i].childNodes[1].childNodes[0].data
             };
-            bowlersScore.push(curr);
+            obj[bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = curr;
+
+            bowlersScore[bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = {};
+            bowlersScore[bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name = curr.name;
+            bowlersScore[bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].wickets = curr.wickets;
         }
     }
 

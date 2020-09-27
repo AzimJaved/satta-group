@@ -134,8 +134,8 @@ async function calculatePoints() {
     // console.log (Object.keys(pointsTable));
 
     Object.keys(pointsTable).forEach( async(satteri)=>{
-        let res = await User.updateOne({username : satteri}, {currScore: pointsTable[satteri].currScore});
-        // console.log(res.n);
+        let res = await User.updateOne({username : satteri}, {currScore: pointsTable[satteri].currentScore});
+        console.log(res.n);
     });
 }
 
@@ -147,3 +147,4 @@ app.listen(PORT, () => {
     console.log(`app league server listening on PORT: ${PORT}`)
 })
 
+setInterval(calculatePoints, 30000);
