@@ -3,12 +3,13 @@ import "../App.css";
 import Table from './PointsTable'
 import SattaForm from './Sattaform';
 
-const serverEndpoint = "http://localhost:8000"
+const serverEndpoint = require('../config.json').APIConfig.baseURL
+
 export default function Login() {
     let [user, setUser] = useState({ authenticated: false, token: null })
 
-    let isSattaOn = true;
-    let sattaLagaDiya = false;
+    let [sattaOn, setSattaOn] = useState(false);
+    let [sattaLagaDiya, kyaSattaLagadiya] = useState(false);
     let [email, setEmail] = useState('')
     let [password, setPassword] = useState('')
 
@@ -35,19 +36,8 @@ export default function Login() {
             .then(data => {
                 if (data.authenticated) {
                     setUser({ authenticated: true, token: data.token })
-                    fetch(serverEndpoint + '/pingAppliances', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ "token": data.token })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.type === 'success') {
-                                console.log("success");
-                            }
-                        })
+                    setSattaOn(data.sattaOn)
+                    kyaSattaLagadiya(data.sattaLagaDiya)
                     setEmail("")
                     setPassword("")
                 } else {
@@ -65,8 +55,8 @@ export default function Login() {
                             Welcome to the Satta Site.
                         </h1>
                         {
-                            (isSattaOn && !sattaLagaDiya) || 1 ? (<SattaForm />)
-                                : (<div>Satta is off </div>)
+                            (sattaOn && !sattaLagaDiya) || 1 ? (<SattaForm />)
+                                : (<div>Ho chuki sattebaazi </div>)
                         }
                         <Table />
 
