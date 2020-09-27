@@ -5,7 +5,13 @@ const scraper = require('./libs/scraper')
 const bodyParser = require('body-parser')
 const crypto = require('crypto-js')
 const cors = require('cors')
+
 const dotenv = require('dotenv')
+const result = dotenv.config()
+if (result.error) {
+    console.log(result.error)
+    throw result.error
+}
 
 const points = require('./libs/points')
 
@@ -64,24 +70,24 @@ app.post('/login', (req, res) => {
         .catch(() => {
             console.log("Sign in failed")
             res.json({ authenticated: false, token: null })
-            return  
+            return
         })
 })
 
-app.post('/createUser', async(req, res) =>{
-    if(1 || crypto.MD5(req.body.key) == env.secret ){
+app.post('/createUser', async (req, res) => {
+    if (req.body.key == process.env.ADMIN_KEY) {
         const newUser = new User({
-            username : req.body.username,
+            username: req.body.username,
             players: [],
-            currScore : 0,
+            currScore: 0,
             cumScore: 0
         });
         newUser.save((err, resu) => {
-            if(err) return res.sendStatus(500);
+            if (err) return res.sendStatus(500);
             return res.sendStatus(201);
         });
     }
-    else 
+    else
         res.sendStatus(401);
 });
 
@@ -106,14 +112,11 @@ app.post('/submitSatta', async (req, res) => {
     }
 });
 
-
 app.get('/scores', async (req, res) => {
     console.log("Scores");
     let u = await User.find({}, ['username', 'currScore', 'cumScore']);
-    res.send(JSON.stringify(u));
+    res.json(u);
 });
-
-
 
 async function calculatePoints() {
     let url = "https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21";
@@ -126,9 +129,7 @@ async function calculatePoints() {
     };
     let userTeams = {};
     userTeams.matchUrl = url;
-
     userTeams.users = [];
-
     let users = await User.find({});
     users.forEach((satteri) => {
         var obj = {};
@@ -140,26 +141,13 @@ async function calculatePoints() {
         obj.totalScore = satteri.currScore;
         obj.team = team;
         userTeams.users.push(obj);
-
     });
-
-    // console.log(userTeams);
-
     let pointsTable = await points.calculate(userTeams, scoring);
-    // console.log(pointsTable)
-
-    // console.log (Object.keys(pointsTable));
-
-    Object.keys(pointsTable).forEach( async(satteri)=>{
-        let res = await User.updateOne({username : satteri}, {currScore: pointsTable[satteri].currentScore});
-        // console.log(res.n);
+    Object.keys(pointsTable).forEach(async (satteri) => {
     });
 }
-
 calculatePoints();
 
-
-// scraper.cricbuzzWorker('22663')
 app.listen(PORT, () => {
     console.log(`app league server listening on PORT: ${PORT}`)
 })
