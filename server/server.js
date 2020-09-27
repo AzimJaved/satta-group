@@ -45,7 +45,7 @@ app.post('/login', (req, res) => {
     console.log(req.body.email + " " + req.body.password)
     firebaseAuth.signInWithEmailAndPassword(req.body.email, req.body.password)
         .then(() => {
-            let token = crypto.MD5('/AzIm/' + req.body.email + '*' + req.body.password + '*' + time.toString() + '/AyEsha/').toString()
+            let token = crypto.MD5('/AzIm/' + req.body.email + '*/' + process.env.TOKEN_SALT + '/').toString()
             let authToken = new Auth({ token: token, date: time, valid: true })
             authToken.save()
                 .then(savedToken => {
