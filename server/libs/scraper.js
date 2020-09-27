@@ -9,65 +9,10 @@ const request = require('request')
  * @function parseHtml_cricinfo Parses the given espncricinfo.com HTML code and returns the playerwise scoreboard
  * @param matchHtml The HTML code
 */
-function parseHtml_cricinfoOld(matchHtml) {
-    const $ = cheerio.load(matchHtml)
-    var batsmenScore = {}
-    var bowlersScore = {}
-    var batsmen = []
-    var bowlers = []
-    // First innings
-    $("[id='gp-inning-00']").find("[class='wrap batsmen']").each(function (index, element) {
-        batsmen.push(element)
-    })
-    $("[id='gp-inning-00']").find("[class='scorecard-section bowling']").each(function (index, element) {
-        bowlers.push(element.children[0].children[1].children)
-    })
-    // Second Innings
-    $("[id='gp-inning-01']").find("[class='wrap batsmen']").each(function (index, element) {
-        batsmen.push(element)
-    })
-    $("[id='gp-inning-01']").find("[class='scorecard-section bowling']").each(function (index, element) {
-        bowlers.push(element.children[0].children[1].children)
-    })
-    // generate batsmen json.
-    for (let i = 0; i < batsmen.length; i++) {
-        var name = batsmen[i].children[0].children[0].children[0].data
-        if (name.includes(' †')) {
-            name = name.split(' †')[0]
-        }
-        if (name.includes(' (c)')) {
-            name = name.split(' (c)')[0]
-        }
-        var batsmanJson = {
-            name: name,
-            runs: batsmen[i].children[2].children[0].data
-        }
-        batsmenScore[name] = batsmanJson
-    }
-    // generate bowler json
-    for (let j = 0; j < bowlers.length; j++) {
-        for (let i = 0; i < bowlers[j].length; i++) {
-            var name = bowlers[j][i].children[0].children[0].children[0].data
-            if (name.includes(' †')) {
-                name = name.split(' †')[0]
-            }
-            if (name.includes(' (c)')) {
-                name = name.split(' (c)')[0]
-            }
-            var bowlerJson = {
-                name: name,
-                wickets: bowlers[j][i].children[5].children[0].data,
-            }
-            bowlersScore[name] = bowlerJson
-        }
-    }
-    return { batsmen: batsmenScore, bowlers: bowlersScore }
-}
 
 
-
-function parseHtml_cricinfo(html) {
-    const $ = cheerio.load(html);
+function parseHtml_cricinfo(matchHtml) {
+    const $ = cheerio.load(matchHtml);
     var batsmenScore = {};
     var bowlersScore = {};
 
@@ -87,13 +32,9 @@ function parseHtml_cricinfo(html) {
                 };
 
                 obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = {};
-                // obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name  = curr.name;
-                // obj[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].runs  = curr.runs;
-                
-                // obj.bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data = curr;
-                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data]  = {} ;
-                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name  = curr.name ;
-                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].runs  = curr.runs ;
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = {};
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].name = curr.name;
+                batsmenScore[bmt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data].runs = curr.runs;
             }
         }
     }
@@ -107,12 +48,11 @@ function parseHtml_cricinfo(html) {
 
 
         for (var i = 0; i < bwt.children.length - 1; i++) {
-            // console.log(bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data, bwt.childNodes[i].childNodes[1].childNodes[0].data);
             var obj = {};
-            
+
             var curr = {
                 'name': bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data,
-                'wickets':bwt.childNodes[i].childNodes[1].childNodes[0].data
+                'wickets': bwt.childNodes[i].childNodes[1].childNodes[0].data
             };
             obj[bwt.childNodes[i].childNodes[0].childNodes[0].childNodes[0].data] = curr;
 
@@ -122,25 +62,8 @@ function parseHtml_cricinfo(html) {
         }
     }
 
-    // console.log(batsmenScore);
-    // console.log(bowlersScore);
-
-
     return { 'batsmen': batsmenScore, 'bowlers': bowlersScore }
 }
-
-async function test() {
-    console.log("Hello World");
-    fetchHtml('https://www.espncricinfo.com/series/8048/scorecard/1216539/chennai-super-kings-vs-delhi-capitals-7th-match-indian-premier-league-2020-21')
-        .then((html) => {
-            parseHtml_cricinfo(html);
-        })
-        .catch((err) => console.log(err));
-
-}
-
-// test();
-
 
 
 async function parseHtml_cricbuzz(HTML) {
@@ -149,8 +72,7 @@ async function parseHtml_cricbuzz(HTML) {
     let bowlers = []
     let batsmenJson = {}
     let bowlersJson = {}
-    // batsmanName = 
-    // console.log(batsmen[0].children[1].children[1].children[0].data)
+
     $("#innings_1").find("[class~='cb-ltst-wgt-hdr']:nth-of-type(1)").find("[class~='cb-scrd-itms']").each((index, batsman) => {
         if (batsman.children[1].children[1]) {
             batsmen.push(batsman)
@@ -216,9 +138,7 @@ async function fetchHtml(matchUrl) {
 */
 exports.cricinfoWorker = async (matchUrl) => {
     let HTML = await fetchHtml(matchUrl)
-    let scoreboard = await parseHtml_cricinfo(HTML)
-    // console.log(scoreboard)
-    return scoreboard
+    return parseHtml_cricinfo(HTML)
 }
 
 exports.cricbuzzWorker = async (matchId) => {

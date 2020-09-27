@@ -5,11 +5,13 @@ const scraper = require('./libs/scraper')
 const bodyParser = require('body-parser')
 const crypto = require('crypto-js')
 const cors = require('cors')
+const dotenv = require('dotenv')
 
 const points = require('./libs/points')
 
 const connection = require('./libs/mongo')
 const { Auth } = require('./libs/auth')
+
 
 const PORT = process.env.port || 8000
 
@@ -62,7 +64,7 @@ app.post('/login', (req, res) => {
         .catch(() => {
             console.log("Sign in failed")
             res.json({ authenticated: false, token: null })
-            return
+            return  
         })
 })
 

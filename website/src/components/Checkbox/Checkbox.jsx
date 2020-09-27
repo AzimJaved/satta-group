@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import './Checkbox.css'
 
-interface CheckboxProps {
-    id?: string,
-    options: Array<string>,
-    className?: string,
-    name?: string,
-    onChange: Function
-}
+// interface CheckboxProps {
+//     id?: string,
+//     options: Array<string>,
+//     className?: string,
+//     name?: string,
+//     onChange: Function
+// }
 
-export default class Checkbox extends Component<CheckboxProps>{
+export default class Checkbox extends Component{
     render() {
         return (
             <div className="checkbox-container">
